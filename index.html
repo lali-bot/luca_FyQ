@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChemQuest — Taula Periòdica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d1a;
+    --surface: #1a1a2e;
+    --surface2: #16213e;
+    --accent: #e94560;
+    --gold: #ffd700;
+    --text: #e0e0e0;
+    --muted: #888;
+    --success: #4caf50;
+    --error: #f44336;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.active { display: block; }
+
+  /* ====== MENÚ ====== */
+  #screen-menu {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  #screen-menu.active { display: flex; }
+
+  .logo {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+    text-align: center;
+  }
+  .logo-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .menu-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.75rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .menu-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .menu-card:active { transform: translateY(-1px); }
+  .menu-card .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .menu-card .title { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .menu-card .desc { font-size: 0.78rem; color: var(--muted); }
+
+  .card-elements  { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+  .card-hydrides  { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
+  .card-mixed     { background: linear-gradient(135deg, #1a1a2e, #1b1b3a); }
+  .card-table     { background: linear-gradient(135deg, #1a1a2e, #0d1b2a); }
+
+  .highscore-bar {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .highscore-bar span { color: var(--gold); font-weight: 700; }
+
+  /* ====== JOC ====== */
+  #screen-game {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  #screen-game.active { display: flex; }
+
+  .game-header {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .btn-back {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text);
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+  }
+  .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+  .game-stats { display: flex; gap: 1.25rem; align-items: center; }
+  .stat { text-align: center; }
+  .stat-val { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  .progress-bar {
+    width: 100%;
+    max-width: 640px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .timer-ring { width: 56px; height: 56px; position: relative; }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle { fill: none; stroke-width: 4; }
+  .timer-bg { stroke: rgba(255,255,255,0.1); }
+  .timer-fg {
+    stroke: var(--gold);
+    stroke-linecap: round;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .question-card {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .q-type {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .q-element-display {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 0.5rem auto 1rem;
+    display: inline-block;
+    min-width: 100px;
+  }
+  .q-symbol { font-size: 3rem; font-weight: 900; line-height: 1; }
+  .q-number { font-size: 0.75rem; color: var(--muted); }
+  .q-text { font-size: 1.2rem; font-weight: 600; line-height: 1.4; }
+
+  .answers-grid {
+    width: 100%;
+    max-width: 640px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .answer-btn {
+    background: var(--surface);
+    border: 2px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    padding: 1rem 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    text-align: center;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3;
+  }
+  .answer-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(233,69,96,0.1);
+    transform: translateY(-2px);
+  }
+  .answer-btn.correct { border-color: var(--success); background: rgba(76,175,80,0.2); color: #80ff84; }
+  .answer-btn.wrong   { border-color: var(--error);   background: rgba(244,67,54,0.2);  color: #ff8080; }
+  .answer-btn:disabled { cursor: default; }
+
+  .feedback-msg {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-height: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .feedback-msg.correct { color: var(--success); }
+  .feedback-msg.wrong   { color: var(--error); }
+
+  /* ====== RESULTATS ====== */
+  #screen-results {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+  #screen-results.active { display: flex; }
+
+  .result-emoji  { font-size: 4rem; margin-bottom: 1rem; }
+  .result-title  { font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; }
+  .result-score  {
+    font-size: 4rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1rem 0;
+  }
+  .result-sub { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
+
+  .result-breakdown {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.25rem 1.75rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    width: 100%;
+    max-width: 420px;
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .val { font-weight: 700; }
+  .breakdown-row .val.good { color: var(--success); }
+  .breakdown-row .val.bad  { color: var(--error); }
+
+  .btn-primary {
+    background: var(--accent); color: white; border: none;
+    padding: 0.85rem 2.5rem; border-radius: 12px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: all 0.15s; margin: 0.4rem;
+  }
+  .btn-primary:hover { background: #ff2d4a; transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.85rem 2.5rem; border-radius: 12px;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; margin: 0.4rem;
+  }
+  .btn-secondary:hover { border-color: white; transform: translateY(-2px); }
+
+  /* ====== TAULA PERIÒDICA ====== */
+  #screen-table { min-height: 100vh; padding: 1.5rem; display: none; }
+  #screen-table.active { display: block; }
+
+  .table-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .table-title  { font-size: 1.4rem; font-weight: 700; }
+
+  .pt-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; font-size: 0.7rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.3rem; }
+  .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+
+  .pt-grid {
+    display: grid;
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    gap: 3px;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .pt-cell {
+    aspect-ratio: 1;
+    background: var(--surface);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    min-width: 40px;
+    padding: 2px;
+  }
+  .pt-cell:hover { transform: scale(1.15); z-index: 10; border-color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .pt-cell .pt-num  { font-size: 0.55rem; color: rgba(255,255,255,0.6); align-self: flex-start; padding-left: 3px; }
+  .pt-cell .pt-sym  { font-size: 1rem; font-weight: 800; line-height: 1; }
+  .pt-cell .pt-name { font-size: 0.4rem; color: rgba(255,255,255,0.7); text-align: center; }
+  .pt-spacer { background: transparent; border: none; cursor: default; }
+  .pt-spacer:hover { transform: none; box-shadow: none; border-color: transparent; }
+
+  .cat-alkali      { background: rgba(255,107,107,0.3); border-color: rgba(255,107,107,0.4); }
+  .cat-alkaline    { background: rgba(255,165,0,0.3);   border-color: rgba(255,165,0,0.4); }
+  .cat-transition  { background: rgba(91,155,213,0.3);  border-color: rgba(91,155,213,0.4); }
+  .cat-other-metal { background: rgba(112,193,179,0.3); border-color: rgba(112,193,179,0.4); }
+  .cat-metalloid   { background: rgba(199,125,255,0.3); border-color: rgba(199,125,255,0.4); }
+  .cat-nonmetal    { background: rgba(249,199,79,0.3);  border-color: rgba(249,199,79,0.4); }
+  .cat-halogen     { background: rgba(67,170,139,0.3);  border-color: rgba(67,170,139,0.4); }
+  .cat-noble       { background: rgba(67,97,238,0.3);   border-color: rgba(67,97,238,0.4); }
+  .cat-lanthanide  { background: rgba(247,37,133,0.25); border-color: rgba(247,37,133,0.4); }
+  .cat-actinide    { background: rgba(255,158,0,0.25);  border-color: rgba(255,158,0,0.4); }
+
+  .element-popup {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.25rem 1.75rem;
+    z-index: 100;
+    display: none;
+    min-width: 280px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    animation: popIn 0.2s ease;
+  }
+  .element-popup.show { display: block; }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .popup-main { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+  .popup-symbol { font-size: 2.5rem; font-weight: 900; line-height: 1; width: 70px; text-align: center; }
+  .popup-info h3 { font-size: 1.1rem; font-weight: 700; }
+  .popup-info .popup-num { color: var(--muted); font-size: 0.82rem; }
+  .popup-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
+  .popup-tag { font-size: 0.68rem; padding: 0.2rem 0.5rem; border-radius: 99px; background: rgba(255,255,255,0.1); }
+  .popup-hydride {
+    background: rgba(233,69,96,0.15);
+    border: 1px solid rgba(233,69,96,0.3);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.82rem;
+  }
+  .popup-hydride strong { color: var(--accent); }
+
+  .hydrides-ref {
+    margin-top: 1.5rem;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.25rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hydrides-ref h2 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent); }
+
+  .hydride-tables { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .hydride-table-section h3 {
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .hydride-row {
+    display: flex; justify-content: space-between;
+    padding: 0.3rem 0; font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .hydride-row:last-child { border-bottom: none; }
+  .hydride-formula { font-weight: 700; font-family: monospace; color: var(--gold); }
+
+  @media (max-width: 700px) {
+    .hydride-tables    { grid-template-columns: 1fr; }
+    .menu-grid         { grid-template-columns: 1fr; }
+    .answers-grid      { grid-template-columns: 1fr; }
+    .pt-cell           { min-width: 24px; }
+    .pt-cell .pt-sym   { font-size: 0.6rem; }
+    .pt-cell .pt-name  { display: none; }
+    .pt-cell .pt-num   { font-size: 0.4rem; }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%  { transform: translateX(-8px); }
+    75%  { transform: translateX(8px); }
+  }
+  .shake { animation: shake 0.3s ease; }
+
+  @keyframes bounce-in {
+    0%   { transform: scale(0.8); opacity: 0; }
+    60%  { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  .bounce-in { animation: bounce-in 0.4s ease; }
+
+  .streak-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    color: white; font-size: 0.7rem; font-weight: 700;
+    padding: 0.2rem 0.5rem; border-radius: 99px; margin-left: 0.5rem;
+  }
+
+  /* ====== HISTORIAL DE RESULTATS ====== */
+  .result-history-title {
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--muted); margin: 1.5rem 0 0.75rem; text-align: left;
+    width: 100%; max-width: 560px;
+  }
+  .result-history {
+    width: 100%; max-width: 560px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--surface);
+    border-radius: 14px;
+    margin-bottom: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+  }
+  .result-history::-webkit-scrollbar { width: 5px; }
+  .result-history::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
+  .history-item {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: start;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.82rem;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-icon { font-size: 1rem; margin-top: 1px; }
+  .history-body { flex: 1; }
+  .history-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+  .history-correct { color: rgba(255,255,255,0.9); }
+  .history-wrong-ans { color: var(--error); font-size: 0.75rem; margin-top: 2px; }
+  .history-timeout { color: var(--muted); font-size: 0.75rem; font-style: italic; margin-top: 2px; }
+  .history-qnum { font-size: 0.65rem; color: var(--muted); white-space: nowrap; }
+  .history-item.ok { background: rgba(76,175,80,0.05); }
+  .history-item.ko { background: rgba(244,67,54,0.05); }
+
+  .stat-pills {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 1rem;
+  }
+  .stat-pill {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 0.6rem 1.1rem;
+    text-align: center;
+    min-width: 90px;
+  }
+  .stat-pill .pval { font-size: 1.5rem; font-weight: 900; }
+  .stat-pill .plbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-pill.good .pval { color: var(--success); }
+  .stat-pill.bad  .pval { color: var(--error); }
+  .stat-pill.gold .pval { color: var(--gold); }
+  .stat-pill.blue .pval { color: #5b9bd5; }
+
+  .missed-section {
+    width: 100%; max-width: 560px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  .missed-title {
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--error); margin-bottom: 0.5rem;
+  }
+  .missed-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .missed-chip {
+    background: rgba(244,67,54,0.15);
+    border: 1px solid rgba(244,67,54,0.3);
+    color: #ffaaaa;
+    border-radius: 8px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  /* ====== REFERÈNCIA FINAL ====== */
+  .ref-toggle {
+    width: 100%; max-width: 560px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.15s;
+  }
+  .ref-toggle:hover { border-color: var(--accent); }
+  .ref-toggle .arrow { transition: transform 0.25s; display: inline-block; }
+  .ref-toggle.open .arrow { transform: rotate(180deg); }
+
+  .ref-panel {
+    width: 100%; max-width: 560px;
+    display: none;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.1rem;
+    margin-bottom: 1.2rem;
+  }
+  .ref-panel.open { display: block; }
+
+  .ref-section-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin: 0.9rem 0 0.5rem;
+  }
+  .ref-section-title:first-child { margin-top: 0; }
+
+  /* Taula d'hidrurs */
+  .ref-hydride-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 500px) { .ref-hydride-grid { grid-template-columns: 1fr; } }
+
+  .ref-hcol h4 {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .ref-hrow {
+    padding: 0.28rem 0;
+    font-size: 0.78rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .ref-hrow:last-child { border-bottom: none; }
+  .ref-hformula { font-family: monospace; font-weight: 700; color: var(--gold); font-size: 0.85rem; }
+  .ref-hname    { color: rgba(255,255,255,0.85); }
+  .ref-hcommon  { color: var(--muted); font-size: 0.7rem; font-style: italic; }
+
+  /* Taula d'elements per períodes */
+  .ref-elem-period {
+    margin-bottom: 0.6rem;
+  }
+  .ref-period-label {
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+  .ref-elem-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .ref-elem-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 7px;
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+    min-width: 36px;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+  .ref-elem-chip .rcsym { font-weight: 800; font-size: 0.82rem; line-height: 1.1; }
+  .ref-elem-chip .rcname { font-size: 0.55rem; color: rgba(255,255,255,0.65); }
+
+  /* ====== EXPLICACIÓ D'ERROR ====== */
+  .explanation-box {
+    width: 100%; max-width: 640px;
+    background: linear-gradient(135deg, rgba(10,30,60,0.95), rgba(20,20,50,0.95));
+    border: 1px solid rgba(91,155,213,0.4);
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.75rem;
+    display: none;
+  }
+  .explanation-box.show {
+    display: block;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .expl-rule {
+    font-size: 0.86rem;
+    color: #aad4ff;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+  .expl-trick {
+    font-size: 0.84rem;
+    color: var(--gold);
+    line-height: 1.5;
+  }
+
+  /* Botó i expansor a l'historial */
+  .hist-tip-btn {
+    background: rgba(255,215,0,0.12);
+    border: 1px solid rgba(255,215,0,0.3);
+    color: var(--gold);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    margin-top: 3px;
+  }
+  .hist-tip-btn:hover { background: rgba(255,215,0,0.22); }
+  .hist-tip-box {
+    display: none;
+    background: rgba(10,30,60,0.7);
+    border-left: 2px solid rgba(91,155,213,0.5);
+    border-radius: 0 6px 6px 0;
+    padding: 0.5rem 0.7rem;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+  .hist-tip-box.show { display: block; }
+  .hist-tip-rule  { color: #aad4ff; margin-bottom: 0.25rem; }
+  .hist-tip-trick { color: var(--gold); }
+
+  .btn-continue {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: none;
+    margin: 0 auto;
+  }
+  .btn-continue.show { display: block; animation: fadeUp 0.25s ease; }
+  .btn-continue:hover { background: #ff2d4a; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<!-- ============ MENÚ ============ -->
+<div id="screen-menu" class="screen active">
+  <div class="logo">⚗️ ChemQuest</div>
+  <div class="logo-sub">Taula Periòdica · Hidrurs</div>
+  <div class="menu-grid">
+    <div class="menu-card card-elements" onclick="startGame('elements')">
+      <div class="icon">🔬</div>
+      <div class="title">Elements</div>
+      <div class="desc">Noms, símbols i números atòmics</div>
+    </div>
+    <div class="menu-card card-hydrides" onclick="startGame('hydrides')">
+      <div class="icon">🧪</div>
+      <div class="title">Hidrurs</div>
+      <div class="desc">Fórmules i nomenclatura d'hidrurs</div>
+    </div>
+    <div class="menu-card card-mixed" onclick="startGame('mixed')">
+      <div class="icon">⚡</div>
+      <div class="title">Repte Mixt</div>
+      <div class="desc">Preguntes de tot — mode difícil</div>
+    </div>
+    <div class="menu-card card-table" onclick="showScreen('screen-table')">
+      <div class="icon">📋</div>
+      <div class="title">Taula Periòdica</div>
+      <div class="desc">Explorar elements i hidrurs</div>
+    </div>
+  </div>
+  <div class="highscore-bar" id="menu-highscores"></div>
+</div>
+
+<!-- ============ JOC ============ -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="goMenu()">← Menú</button>
+    <div class="game-stats">
+      <div class="stat">
+        <div class="stat-val" id="stat-score">0</div>
+        <div class="stat-label">Punts</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="stat-q">1/45</div>
+        <div class="stat-label">Pregunta</div>
+      </div>
+      <div class="timer-ring">
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle class="timer-bg" cx="28" cy="28" r="22"/>
+          <circle class="timer-fg" id="timer-circle" cx="28" cy="28" r="22"/>
+        </svg>
+        <div class="timer-text" id="timer-text">15</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+
+  <div class="question-card" id="question-card">
+    <div class="q-type" id="q-type-label">Pregunta</div>
+    <div id="q-body"></div>
+  </div>
+
+  <div class="answers-grid" id="answers-grid"></div>
+  <div class="feedback-msg" id="feedback-msg"></div>
+  <div class="explanation-box" id="explanation-box">
+    <div class="expl-rule"  id="expl-rule"></div>
+    <div class="expl-trick" id="expl-trick"></div>
+  </div>
+  <button class="btn-continue" id="btn-continue" onclick="advanceQuestion()">Continuar →</button>
+</div>
+
+<!-- ============ RESULTATS ============ -->
+<div id="screen-results" class="screen">
+  <div style="width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 2rem">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-title" id="result-title">Molt bé!</div>
+    <div class="result-score" id="result-score">40/45</div>
+    <div class="result-sub" id="result-sub"></div>
+
+    <div class="stat-pills" id="stat-pills"></div>
+
+    <div class="missed-section" id="missed-section" style="display:none">
+      <div class="missed-title">⚠ Per repassar</div>
+      <div class="missed-chips" id="missed-chips"></div>
+    </div>
+
+    <div class="result-history-title">Detall pregunta a pregunta</div>
+    <div class="result-history" id="result-history"></div>
+
+    <!-- Referència desplegable -->
+    <button class="ref-toggle" id="ref-toggle-hydrures" onclick="toggleRef('hydrures')">
+      📋 Tots els hidrurs <span class="arrow">▼</span>
+    </button>
+    <div class="ref-panel" id="ref-panel-hydrures"></div>
+
+    <button class="ref-toggle" id="ref-toggle-elements" onclick="toggleRef('elements')">
+      🔬 Tots els elements <span class="arrow">▼</span>
+    </button>
+    <div class="ref-panel" id="ref-panel-elements"></div>
+
+    <div style="margin-top:0.5rem">
+      <button class="btn-primary" id="btn-play-again">Jugar de nou</button>
+      <button class="btn-secondary" onclick="goMenu()">Menú principal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAULA ============ -->
+<div id="screen-table" class="screen">
+  <div class="table-header">
+    <button class="btn-back" onclick="goMenu()">← Menú</button>
+    <div class="table-title">Taula Periòdica Interactiva</div>
+  </div>
+  <div class="pt-legend" id="pt-legend"></div>
+  <div class="pt-grid" id="pt-grid"></div>
+  <div class="hydrides-ref">
+    <h2>📚 Referència d'Hidrurs</h2>
+    <div class="hydride-tables" id="hydride-tables"></div>
+  </div>
+  <div class="element-popup" id="element-popup"></div>
+</div>
+
+<script>
+// ============================================================
+// DADES
+// ============================================================
+
+const CATEGORIES = {
+  'alkali':      { label: 'Metal alcalí',          color: '#ff6b6b' },
+  'alkaline':    { label: 'Metal alcalinoterri',    color: '#ffa500' },
+  'transition':  { label: 'Metal de transició',     color: '#5b9bd5' },
+  'other-metal': { label: 'Altres metalls',          color: '#70c1b3' },
+  'metalloid':   { label: 'Metal·loide',             color: '#c77dff' },
+  'nonmetal':    { label: 'No metall',               color: '#f9c74f' },
+  'halogen':     { label: 'Halogen',                 color: '#43aa8b' },
+  'noble':       { label: 'Gas noble',               color: '#4361ee' },
+  'lanthanide':  { label: 'Lantànid',                color: '#f72585' },
+  'actinide':    { label: 'Actínid',                 color: '#ff9e00' },
+};
+
+// [número, símbol, nom_català, categoria, període, grup, massa]
+const ELEMENTS_DATA = [
+  [1,'H','Hidrogen','nonmetal',1,1,'1.008'],
+  [2,'He','Heli','noble',1,18,'4.003'],
+  [3,'Li','Liti','alkali',2,1,'6.941'],
+  [4,'Be','Beril·li','alkaline',2,2,'9.012'],
+  [5,'B','Bor','metalloid',2,13,'10.81'],
+  [6,'C','Carboni','nonmetal',2,14,'12.01'],
+  [7,'N','Nitrogen','nonmetal',2,15,'14.01'],
+  [8,'O','Oxigen','nonmetal',2,16,'16.00'],
+  [9,'F','Fluor','halogen',2,17,'19.00'],
+  [10,'Ne','Neó','noble',2,18,'20.18'],
+  [11,'Na','Sodi','alkali',3,1,'22.99'],
+  [12,'Mg','Magnesi','alkaline',3,2,'24.31'],
+  [13,'Al','Alumini','other-metal',3,13,'26.98'],
+  [14,'Si','Silici','metalloid',3,14,'28.09'],
+  [15,'P','Fòsfor','nonmetal',3,15,'30.97'],
+  [16,'S','Sofre','nonmetal',3,16,'32.07'],
+  [17,'Cl','Clor','halogen',3,17,'35.45'],
+  [18,'Ar','Argó','noble',3,18,'39.95'],
+  [19,'K','Potassi','alkali',4,1,'39.10'],
+  [20,'Ca','Calci','alkaline',4,2,'40.08'],
+  [21,'Sc','Escandi','transition',4,3,'44.96'],
+  [22,'Ti','Titani','transition',4,4,'47.87'],
+  [23,'V','Vanadi','transition',4,5,'50.94'],
+  [24,'Cr','Crom','transition',4,6,'52.00'],
+  [25,'Mn','Manganès','transition',4,7,'54.94'],
+  [26,'Fe','Ferro','transition',4,8,'55.85'],
+  [27,'Co','Cobalt','transition',4,9,'58.93'],
+  [28,'Ni','Níquel','transition',4,10,'58.69'],
+  [29,'Cu','Coure','transition',4,11,'63.55'],
+  [30,'Zn','Zinc','transition',4,12,'65.38'],
+  [31,'Ga','Gal·li','other-metal',4,13,'69.72'],
+  [32,'Ge','Germani','metalloid',4,14,'72.63'],
+  [33,'As','Arsènic','metalloid',4,15,'74.92'],
+  [34,'Se','Seleni','nonmetal',4,16,'78.97'],
+  [35,'Br','Brom','halogen',4,17,'79.90'],
+  [36,'Kr','Criptó','noble',4,18,'83.80'],
+  [37,'Rb','Rubidi','alkali',5,1,'85.47'],
+  [38,'Sr','Estronci','alkaline',5,2,'87.62'],
+  [39,'Y','Itri','transition',5,3,'88.91'],
+  [40,'Zr','Zirconi','transition',5,4,'91.22'],
+  [41,'Nb','Niobi','transition',5,5,'92.91'],
+  [42,'Mo','Molibdè','transition',5,6,'95.95'],
+  [43,'Tc','Tecneci','transition',5,7,'97'],
+  [44,'Ru','Ruteni','transition',5,8,'101.1'],
+  [45,'Rh','Rodi','transition',5,9,'102.9'],
+  [46,'Pd','Pal·ladi','transition',5,10,'106.4'],
+  [47,'Ag','Plata','transition',5,11,'107.9'],
+  [48,'Cd','Cadmi','transition',5,12,'112.4'],
+  [49,'In','Indi','other-metal',5,13,'114.8'],
+  [50,'Sn','Estany','other-metal',5,14,'118.7'],
+  [51,'Sb','Antimoni','metalloid',5,15,'121.8'],
+  [52,'Te','Tel·luri','metalloid',5,16,'127.6'],
+  [53,'I','Iode','halogen',5,17,'126.9'],
+  [54,'Xe','Xenó','noble',5,18,'131.3'],
+  [55,'Cs','Cesi','alkali',6,1,'132.9'],
+  [56,'Ba','Bari','alkaline',6,2,'137.3'],
+  [57,'La','Lantà','lanthanide',6,3,'138.9'],
+  [72,'Hf','Hafni','transition',6,4,'178.5'],
+  [73,'Ta','Tàntal','transition',6,5,'180.9'],
+  [74,'W','Wolframi','transition',6,6,'183.8'],
+  [75,'Re','Reni','transition',6,7,'186.2'],
+  [76,'Os','Osmi','transition',6,8,'190.2'],
+  [77,'Ir','Iridi','transition',6,9,'192.2'],
+  [78,'Pt','Plati','transition',6,10,'195.1'],
+  [79,'Au','Or','transition',6,11,'197.0'],
+  [80,'Hg','Mercuri','transition',6,12,'200.6'],
+  [81,'Tl','Tal·li','other-metal',6,13,'204.4'],
+  [82,'Pb','Plom','other-metal',6,14,'207.2'],
+  [83,'Bi','Bismut','other-metal',6,15,'209.0'],
+  [84,'Po','Poloni','metalloid',6,16,'209'],
+  [85,'At','Àstat','halogen',6,17,'210'],
+  [86,'Rn','Radó','noble',6,18,'222'],
+  [87,'Fr','Franci','alkali',7,1,'223'],
+  [88,'Ra','Radi','alkaline',7,2,'226'],
+  [89,'Ac','Actini','actinide',7,3,'227'],
+  [58,'Ce','Ceri','lanthanide',8,4,'140.1'],
+  [59,'Pr','Praseodimi','lanthanide',8,5,'140.9'],
+  [60,'Nd','Neodimi','lanthanide',8,6,'144.2'],
+  [61,'Pm','Promeci','lanthanide',8,7,'145'],
+  [62,'Sm','Samari','lanthanide',8,8,'150.4'],
+  [63,'Eu','Europi','lanthanide',8,9,'152.0'],
+  [64,'Gd','Gadolini','lanthanide',8,10,'157.3'],
+  [65,'Tb','Terbi','lanthanide',8,11,'158.9'],
+  [66,'Dy','Disprosi','lanthanide',8,12,'162.5'],
+  [67,'Ho','Holmi','lanthanide',8,13,'164.9'],
+  [68,'Er','Erbi','lanthanide',8,14,'167.3'],
+  [69,'Tm','Tuli','lanthanide',8,15,'168.9'],
+  [70,'Yb','Iterbi','lanthanide',8,16,'173.1'],
+  [71,'Lu','Luteci','lanthanide',8,17,'175.0'],
+  [90,'Th','Tori','actinide',9,4,'232.0'],
+  [91,'Pa','Protactini','actinide',9,5,'231.0'],
+  [92,'U','Urani','actinide',9,6,'238.0'],
+  [93,'Np','Neptuni','actinide',9,7,'237'],
+  [94,'Pu','Plutoni','actinide',9,8,'244'],
+  [95,'Am','Americi','actinide',9,9,'243'],
+  [96,'Cm','Curi','actinide',9,10,'247'],
+  [97,'Bk','Berkeli','actinide',9,11,'247'],
+  [98,'Cf','Californi','actinide',9,12,'251'],
+  [99,'Es','Einsteini','actinide',9,13,'252'],
+];
+
+const ELEMENTS = ELEMENTS_DATA.map(d => ({
+  number: d[0], symbol: d[1], name: d[2],
+  category: d[3], period: d[4], group: d[5], weight: d[6]
+}));
+
+const ELEM_BY_SYMBOL = {};
+ELEMENTS.forEach(e => ELEM_BY_SYMBOL[e.symbol] = e);
+
+// Hidrurs: [símbol, fórmula, nom_sistemàtic, nom_comú, tipus]
+const HYDRIDES = [
+  // Metàl·lics
+  { symbol:'Li', formula:'LiH',   sysName:'Hidrur de liti',       commonName:'',                    type:'metalic' },
+  { symbol:'Na', formula:'NaH',   sysName:'Hidrur de sodi',       commonName:'',                    type:'metalic' },
+  { symbol:'K',  formula:'KH',    sysName:'Hidrur de potassi',    commonName:'',                    type:'metalic' },
+  { symbol:'Rb', formula:'RbH',   sysName:'Hidrur de rubidi',     commonName:'',                    type:'metalic' },
+  { symbol:'Cs', formula:'CsH',   sysName:'Hidrur de cesi',       commonName:'',                    type:'metalic' },
+  { symbol:'Be', formula:'BeH2',  sysName:'Hidrur de beril·li',   commonName:'',                    type:'metalic' },
+  { symbol:'Mg', formula:'MgH2',  sysName:'Hidrur de magnesi',    commonName:'',                    type:'metalic' },
+  { symbol:'Ca', formula:'CaH2',  sysName:'Hidrur de calci',      commonName:'',                    type:'metalic' },
+  { symbol:'Sr', formula:'SrH2',  sysName:"Hidrur d'estronci",    commonName:'',                    type:'metalic' },
+  { symbol:'Ba', formula:'BaH2',  sysName:'Hidrur de bari',       commonName:'',                    type:'metalic' },
+  { symbol:'Al', formula:'AlH3',  sysName:"Hidrur d'alumini",     commonName:'',                    type:'metalic' },
+  // Hidràcids
+  { symbol:'F',  formula:'HF',    sysName:"Fluorur d'hidrogen",   commonName:'Àcid fluorhídric',    type:'acid' },
+  { symbol:'Cl', formula:'HCl',   sysName:"Clorur d'hidrogen",    commonName:'Àcid clorhídric',     type:'acid' },
+  { symbol:'Br', formula:'HBr',   sysName:"Bromur d'hidrogen",    commonName:'Àcid bromhídric',     type:'acid' },
+  { symbol:'I',  formula:'HI',    sysName:"Iodur d'hidrogen",     commonName:'Àcid iohídric',       type:'acid' },
+  { symbol:'S',  formula:'H2S',   sysName:"Sulfur d'hidrogen",    commonName:'Àcid sulfhídric',     type:'acid' },
+  { symbol:'Se', formula:'H2Se',  sysName:"Seleniür d'hidrogen",  commonName:'Àcid selenhídric',    type:'acid' },
+  { symbol:'Te', formula:'H2Te',  sysName:"Tel·lurur d'hidrogen", commonName:'Àcid tel·lurhídric',  type:'acid' },
+  // No metàl·lics especials
+  { symbol:'N',  formula:'NH3',   sysName:'Trihidrur de nitrogen', commonName:'Amoníac',            type:'especial' },
+  { symbol:'P',  formula:'PH3',   sysName:'Trihidrur de fòsfor',   commonName:'Fosfina',            type:'especial' },
+  { symbol:'As', formula:'AsH3',  sysName:"Trihidrur d'arsènic",   commonName:'Arsina',             type:'especial' },
+  { symbol:'C',  formula:'CH4',   sysName:'Tetrahidrur de carboni',commonName:'Metà',               type:'especial' },
+  { symbol:'Si', formula:'SiH4',  sysName:'Tetrahidrur de silici', commonName:'Silà',               type:'especial' },
+  { symbol:'O',  formula:'H2O',   sysName:'Òxid de dihidrogen',   commonName:'Aigua',              type:'especial' },
+  { symbol:'B',  formula:'BH3',   sysName:'Trihidrur de bor',      commonName:'Borà',               type:'especial' },
+];
+
+const HYDRIDE_BY_SYMBOL = {};
+HYDRIDES.forEach(h => HYDRIDE_BY_SYMBOL[h.symbol] = h);
+
+// ============================================================
+// CONSELLS I TRUCS MNEMOTÈCNICS
+// ============================================================
+
+// Per a cada element: { rule: explicació, trick: mnemotècnic }
+const ELEM_TIPS = {
+  'H':  { rule: 'L\'Hidrogen és el primer i més lleuger de tots els elements. Forma part de l\'aigua (H₂O) i de gairebé tots els àcids.', trick: '🎯 H = número 1, el primer. Recorda: H₂O, HCl, H₂S → l\'hidrogen sempre va primer als hidrurs!' },
+  'He': { rule: 'Heli ve del grec "Helios" (Sol). Es va descobrir primer al Sol via espectroscopi, abans que a la Terra. Gas noble: mai reacciona.', trick: '🎯 HE → 2 lletres → número 2. "HEli globus → 2" !' },
+  'Li': { rule: 'Liti ve del grec "lithos" (pedra). Símbol Li. Metall alcalí molt lleuger, s\'usa en bateries de mòbil i cotxes elèctrics.', trick: '🎯 LI-ti → número 3. Recorda: Li-3, Be-4, B-5, C-6, N-7, O-8, F-9.' },
+  'Be': { rule: 'Beril·li ve del mineral beril, que inclou el maragde. Símbol Be. Grup 2 → forma BeH₂.', trick: '🎯 BE-ril·li → número 4. Grup 2 → 2 H al hidrur: BeH₂.' },
+  'B':  { rule: 'Bor ve de l\'àrab "buraq" (bòrax). Símbol B. Metal·loide del grup 13 → forma BH₃ (borà).', trick: '🎯 B de Bor → número 5. Grup 13 → 3 H: BH₃.' },
+  'C':  { rule: 'Carboni ve del llatí "carbo" (carbó). Base de tota la química orgànica i de la vida. Grup 14 → forma CH₄.', trick: '🎯 C de Carboni → número 6. Grup 14 → 4 H: CH₄ (metà). "C amb 4 braços!"' },
+  'N':  { rule: 'Nitrogen ve del grec "nitron" + "gennao" (generador de nitre). El 78% de l\'aire és nitrogen! Grup 15 → forma NH₃.', trick: '🎯 N → número 7. Grup 15 → 3 H: NH₃. "N té 3 braços lliures → agafa 3 H."' },
+  'O':  { rule: 'Oxigen ve del grec "oxys" (àcid). El 21% de l\'aire. Essencial per a la respiració. Grup 16 → forma H₂O.', trick: '🎯 O → número 8. Grup 16 → 2 H: H₂O (l\'AIGUA!)' },
+  'F':  { rule: 'Fluor ve del llatí "fluere" (fluir). L\'element MÉS electronegatiu de tots! Halogen grup 17 → forma HF.', trick: '🎯 F → número 9. Halogens: F(9), Cl(17), Br(35), I(53). Cada salt = +8+10!' },
+  'Ne': { rule: 'Neó ve del grec "neos" (nou). Gas noble, mai reacciona. S\'usa en rètols lluminosos de color vermell-taronja.', trick: '🎯 NE → número 10. Gas noble: He(2), Ne(10), Ar(18), Kr(36)... salts de 8 i 18!' },
+  'Na': { rule: 'Sodi: símbol Na del llatí "Natrium". Metall alcalí molt reactiu amb l\'aigua. Grup 1 → forma NaH.', trick: '🎯 Na → "Natrium" llatí → número 11. Recorda: Na-Cl = sal de cuina!' },
+  'Mg': { rule: 'Magnesi ve de la ciutat grega Magnèsia. La clorofil·la de les plantes té Mg al centre! Grup 2 → forma MgH₂.', trick: '🎯 Mg → número 12. Grup 2 → MgH₂. "Magnesi, 2 H, com la clorofil·la té 2 funcions!"' },
+  'Al': { rule: 'Alumini ve de l\'alum (mineral). El metall més abundant a l\'escorça terrestre. Grup 13 → forma AlH₃.', trick: '🎯 AL → número 13. "Al-13-umini foil" (paper d\'alumini).' },
+  'Si': { rule: 'Silici ve del llatí "silex" (sílex). Base dels microxips i semiconductors. Grup 14 → forma SiH₄.', trick: '🎯 SI → número 14. Grup 14 → 4 H: SiH₄. "Si-14-con Valley!"' },
+  'P':  { rule: 'Fòsfor: símbol P de l\'anglès "Phosphorus" (grec "phos" = llum). Brilla a la foscor! Grup 15 → forma PH₃.', trick: '🎯 P de Phosphorus → número 15. Grup 15 → 3 H: PH₃ (fosfina).' },
+  'S':  { rule: 'Sofre: símbol S de "Sulfur" (anglès/llatí). Olor d\'ous podrits (H₂S). Color groc brillant. Grup 16 → forma H₂S.', trick: '🎯 S → número 16. Grup 16 → 2 H: H₂S. "Sofre = pudor d\'ous = 2 H!"' },
+  'Cl': { rule: 'Clor ve del grec "chloros" (verd groc). S\'usa per desinfectar piscines. Halogen grup 17 → forma HCl.', trick: '🎯 Cl → número 17. Halogen → 1 H: HCl. Cl(17) = F(9) + 8!' },
+  'Ar': { rule: 'Argó ve del grec "argos" (inactiu, mandrós). L\'1% de l\'atmosfera. Gas noble, no forma hidrurs.', trick: '🎯 AR → número 18. Gas noble → no reacciona. Argó a les bombetes per evitar l\'oxidació!' },
+  'K':  { rule: 'Potassi: símbol K del llatí "Kalium". Essencial per als nervis i el cor. Grup 1 → forma KH.', trick: '🎯 K → "Kalium" llatí → número 19. Plàtan = ric en potassi (K)!' },
+  'Ca': { rule: 'Calci ve del llatí "calx" (calc, pedra calcària). Essencial per a ossos i dents. Grup 2 → forma CaH₂.', trick: '🎯 CA → número 20. Número rodó! Grup 2 → CaH₂. "Calci = 2 H com 2 dents sanes!"' },
+  'Sc': { rule: 'Escandi ve de Scania (Escandinàvia). Primer dels metalls de transició del període 4.', trick: '🎯 SC → número 21. "Escandi = Escandinàvia, 21 graus de fred!"' },
+  'Ti': { rule: 'Titani ve dels Titans de la mitologia grega. Molt lleuger i resistent a la corrosió. S\'usa en implants mèdics i avions.', trick: '🎯 TI → número 22. "Titanis = 22 guerrers forts!"' },
+  'V':  { rule: 'Vanadi ve de Vanadis, deessa nòrdica (Freya). Símbol V. S\'usa en aliatges d\'acer d\'alta resistència.', trick: '🎯 V → número 23. "V de Victòria, posició 23!"' },
+  'Cr': { rule: 'Crom ve del grec "chroma" (color). Dóna color verd als maragdes i vermell als rubins! S\'usa en pintures i cromats.', trick: '🎯 CR → número 24. "CRoma = COLOR → número 24 de colors!"' },
+  'Mn': { rule: 'Manganès ve de Magnèsia (igual que el Mg). S\'usa en aliatges d\'acer i en piles. Símbol Mn.', trick: '🎯 Mn → número 25. Recorda la triada: Cr(24)-Mn(25)-Fe(26), tres en ratlla!' },
+  'Fe': { rule: 'Ferro: símbol Fe del llatí "Ferrum". En anglès és "Iron" però el símbol ve del llatí. El metall més usat del món!', trick: '🎯 Fe → "Ferrum" llatí → número 26. FErrum = FE! I "ferro" en català conserva el so.' },
+  'Co': { rule: 'Cobalt ve de l\'alemany "Kobold" (dimoni de les mines). Els miners medievals el maleïen! La vitamina B12 conté cobalt.', trick: '🎯 CO → número 27. "COrbalt... no, COBalt, el dimoni de les mines!"' },
+  'Ni': { rule: 'Níquel ve de l\'alemany "Kupfernickel" (coure del dimoni). S\'usa en monedes i aliatges resistents.', trick: '🎯 NI → número 28. Recorda: Fe(26)-Co(27)-Ni(28), els tres metalls magnètics!' },
+  'Cu': { rule: 'Coure: símbol Cu del llatí "Cuprum", de l\'illa de Xipre (rica en mines de coure). Excel·lent conductor elèctric.', trick: '🎯 Cu → "Cuprum" → Xipre → número 29. CUpre = CU!' },
+  'Zn': { rule: 'Zinc ve de l\'alemany "Zinke" (dent, punta). S\'usa per galvanitzar l\'acer (protegir-lo de la rovell) i en piles.', trick: '🎯 ZN → número 30. Número rodó i fàcil. "Zinc Z-i-N-c = 30!"' },
+  'Ga': { rule: 'Gal·li ve del llatí "Gallia" (França). El va descobrir un químic francès. Es fon a 30°C, amb la calor de la mà!', trick: '🎯 GA → número 31. "GAl·li de GAl·lia = França, fon amb la mà!"' },
+  'Ge': { rule: 'Germani ve de "Germania" (Alemanya). Metal·loide usat en semiconductors i fibra òptica.', trick: '🎯 GE → número 32. "GErmani de GErmany = Alemanya!"' },
+  'As': { rule: 'Arsènic ve del grec "arsenikon" (potent). Molt tòxic! Grup 15 → forma AsH₃ (arsina). Símbol As.', trick: '🎯 AS → número 33. Grup 15 → 3 H: AsH₃. "L\'arsènic tòxic AS-asina!"' },
+  'Se': { rule: 'Seleni ve del grec "Selene" (Lluna). Grup 16 → forma H₂Se. Parell del tel·luri (Terra).', trick: '🎯 SE → número 34. Grup 16 → 2 H: H₂Se. "SELeni = LLuna, Selena Gómez!"' },
+  'Br': { rule: 'Brom ve del grec "bromos" (pudor). Un dels dos únics elements líquids a T ambient! Halogen → forma HBr.', trick: '🎯 BR → número 35. Halogen → 1 H: HBr. Br(35) = Cl(17) + 18!' },
+  'Kr': { rule: 'Criptó ve del grec "kryptos" (ocult). Gas noble, no forma hidrurs. Com la kryptonita de Superman!', trick: '🎯 KR → número 36. Gas noble → no reacciona. "KRiptó = KRyptonite!"' },
+  'Rb': { rule: 'Rubidi ve del llatí "rubidus" (roig intens). Metall alcalí. Grup 1 → forma RbH.', trick: '🎯 RB → número 37. Grup 1 → 1 H: RbH. "RuBidi, roig brillant!"' },
+  'Sr': { rule: 'Estronci ve de Strontian (poble d\'Escòcia). Les flames d\'estronci són vermelles (pirotècnia!). Grup 2 → forma SrH₂.', trick: '🎯 SR → número 38. Grup 2 → 2 H: SrH₂. "Estronci = focs artificials VERMELLS!"' },
+  'Y':  { rule: 'Itri ve d\'Ytterby, un petit poble suec on es van descobrir molts elements. Símbol Y.', trick: '🎯 Y → número 39. "Y d\'Ytterby, poblet suec sorprenent!"' },
+  'Ag': { rule: 'Plata: símbol Ag del llatí "Argentum". El millor conductor elèctric de tots els elements. Argentina ve d\'aquí!', trick: '🎯 Ag → "Argentum" → Argentina → número 47. "AGentina = plAGa de plata!"' },
+  'Sn': { rule: 'Estany: símbol Sn del llatí "Stannum". S\'usa en soldadura i en les llaunes de conserves. Número rodó: 50.', trick: '🎯 Sn → "Stannum" llatí → número 50. "SnS = cinquanta = 50, número rodó!"' },
+  'I':  { rule: 'Iode ve del grec "ioeides" (color violeta). El vapor de iode és violeta! Halogen → forma HI. S\'usa com a desinfectant.', trick: '🎯 I → número 53. Halogen → 1 H: HI. I(53) = Br(35) + 18!' },
+  'Xe': { rule: 'Xenó ve del grec "xenos" (estranger, estrany). Gas noble. S\'usa en làmpades de xenó ultrabrillanys.', trick: '🎯 XE → número 54. Gas noble → no reacciona. "XEnó = eXtrany = 54!"' },
+  'Ba': { rule: 'Bari ve del grec "barys" (pesat). Sulfat de bari s\'usa en radiografies de l\'aparell digestiu! Grup 2 → forma BaH₂.', trick: '🎯 BA → número 56. Grup 2 → 2 H: BaH₂. "BAri = RAdiografia = BArrigar pesada!"' },
+  'Au': { rule: 'Or: símbol Au del llatí "Aurum". No s\'oxida ni reacciona amb la majoria d\'àcids. El metall noble per excel·lència.', trick: '🎯 Au → "Aurum" llatí → número 79. AUri-fici = treballar l\'OR!' },
+  'Hg': { rule: 'Mercuri: símbol Hg del grec "Hydrargyrum" (aigua d\'argent). L\'únic metall líquid a temperatura ambient!', trick: '🎯 Hg → "Hydrargyrum" → número 80. "HG = plata líquida, termòmetres vells!"' },
+  'Pb': { rule: 'Plom: símbol Pb del llatí "Plumbum". D\'aquí ve "plomeria/fontaneria" (les canonades eren de plom). Molt dens.', trick: '🎯 Pb → "Plumbum" → PLumber (lampista en anglès) → número 82. PeL Bé del plom, recorda la P i la B!' },
+  'Bi': { rule: 'Bismut ve de l\'alemany "Wismut". S\'usa en medicaments estomacals (Pepto-Bismol!). El metall no radioactiu més pesat.', trick: '🎯 BI → número 83. "BIsmut = BI-en l\'estómac = Pepto-BIsmol!"' },
+};
+
+// Per a cada hidrur: { rule: regla del grup, trick: mnemotècnic }
+const HYDRIDE_TIPS = {
+  'HF':   { rule: 'Regla: els halogens (grup 17) tenen 1 electron en defecte → prenen 1 H: fórmula H+X. F és del grup 17 → HF. En dissolució: àcid fluorhídric.', trick: '🎯 Grup 17 = 1 H davant. Tots els halogens: HF, HCl, HBr, HI.' },
+  'HCl':  { rule: 'Halogen del grup 17 → 1 H: HCl. En dissolució aquosa s\'anomena àcid clorhídric. És el principal àcid de l\'estómac!', trick: '🎯 CLor → HCL. El suc gàstric conté HCl. 1 H = grup 17!' },
+  'HBr':  { rule: 'Halogen del grup 17 → 1 H: HBr. Nom sistemàtic: bromur d\'hidrogen. En dissolució: àcid bromhídric.', trick: '🎯 BRom → HBr. H davant, Br darrere. Grup 17 = 1 H!' },
+  'HI':   { rule: 'Halogen del grup 17 → 1 H: HI. Nom: iodur d\'hidrogen / àcid iohídric. La fórmula més curta dels hidràcids.', trick: '🎯 Iode → HI. Tan simple com H + I. Tintura de iode = desinfectant!' },
+  'H2S':  { rule: 'Sofre (grup 16) té 2 electrons en defecte → necessita 2 H: H₂S. Olor característic d\'ous podrits. En dissolució: àcid sulfhídric.', trick: '🎯 Grup 16 → 2 H sempre. H₂S, H₂Se, H₂Te: tots fan H₂X. "Sofre = 2 ous podrits!"' },
+  'H2Se': { rule: 'Seleni (grup 16, com el sofre) té 2 electrons en defecte → H₂Se. Nom: seleniür d\'hidrogen / àcid selenhídric.', trick: '🎯 Se = grup 16 (com S) → H₂Se. El patró del grup 16 és sempre H₂X.' },
+  'H2Te': { rule: 'Tel·luri (grup 16) → H₂Te. Nom: tel·lurur d\'hidrogen / àcid tel·lurhídric. Completa la sèrie del grup 16.', trick: '🎯 Te = grup 16 → H₂Te. Sèrie completa: H₂S → H₂Se → H₂Te.' },
+  'NH3':  { rule: 'Nitrogen (grup 15) té 3 electrons en defecte → agafa 3 H → NH₃. L\'ordre és N davant i H darrere. Nom comú: amoníac.', trick: '🎯 Grup 15 → 3 H darrere: NH₃, PH₃, AsH₃. "N té 3 braços lliures → agafa 3 H!"' },
+  'PH3':  { rule: 'Fòsfor (grup 15, igual que el N) → PH₃ = fosfina. El grup 15 sempre forma XH₃ amb l\'H darrere.', trick: '🎯 P = grup 15 (com N) → PH₃. "Fosfina" = fòsfor + 3 H. Fosfina = llums fantasma als pantans!' },
+  'AsH3': { rule: 'Arsènic (grup 15) → AsH₃ = arsina. Molt tòxica! Grup 15 → sempre 3 H darrere de l\'element.', trick: '🎯 As = grup 15 → AsH₃. La sèrie: NH₃ → PH₃ → AsH₃. Arsina = arsènic assassí!' },
+  'CH4':  { rule: 'Carboni (grup 14) té 4 electrons en defecte → agafa 4 H → CH₄ = metà. L\'H va darrere. Principal component del gas natural.', trick: '🎯 Grup 14 → 4 H darrere: CH₄, SiH₄. "C amb 4 braços agafa 4 H!" Gas de cuina = metà.' },
+  'SiH4': { rule: 'Silici (grup 14, igual que el C) → SiH₄ = silà. El grup 14 sempre forma XH₄ amb l\'H darrere.', trick: '🎯 Si = grup 14 (com C) → SiH₄. "Silà = silici + 4 H". Si-lici = Si-4.' },
+  'H2O':  { rule: 'Oxigen (grup 16) té 2 electrons en defecte → H₂O. Per convenció l\'H va davant a l\'aigua. Nom sistemàtic: òxid de dihidrogen.', trick: '🎯 O = grup 16 → 2 H: H₂O. La fórmula més famosa de la química! 2 H + 1 O = vida.' },
+  'BH3':  { rule: 'Bor (grup 13) té 3 electrons en defecte → BH₃ = borà. Grup 13 → 3 H (l\'H va darrere per als no metalls).', trick: '🎯 B = grup 13 → BH₃. "Bor de 3 = BH₃." Com l\'Al (AlH₃) però no metall.' },
+  'LiH':  { rule: 'Metalls alcalins (grup 1) tenen valència +1. L\'H actua com H⁻ (ion hidrur, càrrega -1). → MH. Nom: hidrur de + element.', trick: '🎯 Grup 1 → 1 H darrere: LiH, NaH, KH, RbH, CsH. "Un braç = un H!"' },
+  'NaH':  { rule: 'Sodi (grup 1, valència +1) → NaH = hidrur de sodi. L\'H actua com a H⁻. Com NaCl però amb H⁻ en lloc de Cl⁻!', trick: '🎯 Na = grup 1 → NaH. "NaH = Na + H. Com la sal, però amb hidrur!"' },
+  'KH':   { rule: 'Potassi (grup 1) → KH = hidrur de potassi. El grup 1 sempre forma MH (1 sol H).', trick: '🎯 K = grup 1 → KH. Senzill: 1 K + 1 H. Igual que NaH però amb K.' },
+  'RbH':  { rule: 'Rubidi (grup 1) → RbH = hidrur de rubidi. Grup 1 → sempre 1 H. Segueix el patró dels alcalins.', trick: '🎯 Rb = grup 1 → RbH. Sèrie alcalins: LiH → NaH → KH → RbH → CsH.' },
+  'CsH':  { rule: 'Cesi (grup 1) → CsH = hidrur de cesi. L\'últim dels metalls alcalins estables. Grup 1 → 1 H.', trick: '🎯 Cs = grup 1 → CsH. L\'últim de la sèrie: LiH, NaH, KH, RbH, CsH.' },
+  'BeH2': { rule: 'Beril·li (grup 2, valència +2) → BeH₂ = hidrur de beril·li. Metalls alcalinoterris: sempre MH₂ (2 H).', trick: '🎯 Grup 2 → 2 H: BeH₂, MgH₂, CaH₂, SrH₂, BaH₂. "2 braços = 2 H!"' },
+  'MgH2': { rule: 'Magnesi (grup 2, valència +2) → MgH₂ = hidrur de magnesi. Grup 2 → sempre 2 H.', trick: '🎯 Mg = grup 2 → MgH₂. "Magnesi 2-H, com 2 fulles de clorofil·la!"' },
+  'CaH2': { rule: 'Calci (grup 2) → CaH₂ = hidrur de calci. Reacciona amb l\'aigua produint H₂. Grup 2 → 2 H.', trick: '🎯 Ca = grup 2 → CaH₂. "Calci = 2 dents → 2 H! CaH₂ = calç viva + H₂."' },
+  'SrH2': { rule: 'Estronci (grup 2) → SrH₂ = hidrur d\'estronci. Grup 2 → 2 H, igual que Ca, Mg i Ba.', trick: '🎯 Sr = grup 2 → SrH₂. Igual que CaH₂, sempre 2 H per al grup 2.' },
+  'BaH2': { rule: 'Bari (grup 2) → BaH₂ = hidrur de bari. Tanca la sèrie dels alcalinoterris. Grup 2 → 2 H.', trick: '🎯 Ba = grup 2 → BaH₂. Sèrie completa: BeH₂→MgH₂→CaH₂→SrH₂→BaH₂.' },
+  'AlH3': { rule: 'Alumini (grup 13, valència +3) → AlH₃ = hidrur d\'alumini. Grup 13 → 3 H. Com el BH₃ però metàl·lic.', trick: '🎯 Al = grup 13 → AlH₃. "Al-umini 3-H, 3 lletres: A-l-H!" Com el BH₃.' },
+};
+
+// ============================================================
+// MOTOR DEL JOC
+// ============================================================
+const TOTAL_Q      = 45;
+const TIME_PER_Q   = 15;
+const MAX_REPEAT   = Math.floor(TOTAL_Q * 0.2);   // 9 repeticions màxim (~20%)
+const RECENT_MAX   = 200;                          // historial màxim guardat
+const RECENT_KEY   = 'rq_v1';
+
+let gs = {};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pickDistractors(correctVal, pool, key, count = 3) {
+  return shuffle(pool.filter(x => x[key] !== correctVal)).slice(0, count).map(x => x[key]);
+}
+
+// ---- Gestió de preguntes recents (localStorage) ----
+
+function loadRecentSet() {
+  try { return new Set(JSON.parse(localStorage.getItem(RECENT_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function saveRecentKeys(newKeys) {
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch {}
+  arr.push(...newKeys);
+  if (arr.length > RECENT_MAX) arr = arr.slice(arr.length - RECENT_MAX);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(arr));
+}
+
+// ---- Pool complet de preguntes possibles ----
+
+function allElementCombos() {
+  const types = ['sym2name','name2sym','num2sym','cat2elem','name2num'];
+  const pool  = ELEMENTS.filter(e => e.period <= 5);
+  const all   = [];
+  for (const type of types)
+    for (const elem of pool)
+      all.push({ kind:'element', type, elem, key: `e_${type}_${elem.symbol}` });
+  return all;
+}
+
+function allHydrideCombos() {
+  const types = ['formula2name','name2formula','elem2formula','type2name','formula2elem'];
+  const all   = [];
+  for (const type of types)
+    for (const h of HYDRIDES)
+      all.push({ kind:'hydride', type, h, key: `h_${type}_${h.symbol}` });
+  return all;
+}
+
+// ---- Constructors de pregunta a partir d'un combo ----
+
+function buildElementQ(type, elem) {
+  const base = { _elemSym: elem.symbol, _hydrideFormula: null };
+  if (type === 'sym2name') {
+    const opts = shuffle([elem.name, ...pickDistractors(elem.name, ELEMENTS, 'name')]);
+    return { ...base, label:'Símbol → Nom',
+      body:`<div class="q-element-display"><div class="q-symbol">${elem.symbol}</div><div class="q-number">Núm. ${elem.number}</div></div><div class="q-text">Com s'anomena aquest element?</div>`,
+      options:opts, correct:elem.name, subject:elem.name };
+  }
+  if (type === 'name2sym') {
+    const opts = shuffle([elem.symbol, ...pickDistractors(elem.symbol, ELEMENTS, 'symbol')]);
+    return { ...base, label:'Nom → Símbol',
+      body:`<div class="q-text">Quin és el símbol de <strong>${elem.name}</strong>?</div>`,
+      options:opts, correct:elem.symbol, subject:elem.name };
+  }
+  if (type === 'num2sym') {
+    const opts = shuffle([elem.symbol, ...pickDistractors(elem.symbol, ELEMENTS, 'symbol')]);
+    return { ...base, label:'Número atòmic → Símbol',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:2rem">${elem.number}</div></div><div class="q-text">Quin element té el número atòmic <strong>${elem.number}</strong>?</div>`,
+      options:opts, correct:elem.symbol, subject:elem.name };
+  }
+  if (type === 'cat2elem') {
+    const catLabel = CATEGORIES[elem.category]?.label || elem.category;
+    const distractors = shuffle(ELEMENTS.filter(e => e.category !== elem.category)).slice(0,3).map(e => e.name);
+    return { ...base, label:'Categoria',
+      body:`<div class="q-text">Quin d'aquests elements és un <strong>${catLabel}</strong>?</div>`,
+      options:shuffle([elem.name, ...distractors]), correct:elem.name, subject:elem.name };
+  }
+  // name2num
+  const wrongNums = shuffle(ELEMENTS).map(e => String(e.number)).filter(n => n !== String(elem.number)).slice(0,3);
+  return { ...base, label:'Número atòmic',
+    body:`<div class="q-text">Quin és el número atòmic de <strong>${elem.name}</strong>?</div>`,
+    options:shuffle([String(elem.number), ...wrongNums]), correct:String(elem.number), subject:elem.name };
+}
+
+function buildHydrideQ(type, h) {
+  const base = { _elemSym: null, _hydrideFormula: h.formula };
+  if (type === 'formula2name') {
+    const correctName = h.commonName || h.sysName;
+    const wrong3 = shuffle(HYDRIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.commonName || x.sysName);
+    return { ...base, label:'Fórmula → Nom',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.8rem;letter-spacing:-1px">${h.formula}</div></div><div class="q-text">Com s'anomena <strong>${h.formula}</strong>?</div>`,
+      options:shuffle([correctName, ...wrong3]), correct:correctName, subject:h.formula };
+  }
+  if (type === 'name2formula') {
+    const displayName = h.commonName || h.sysName;
+    const wrong3 = shuffle(HYDRIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:'Nom → Fórmula',
+      body:`<div class="q-text">Quina és la fórmula de <strong>${displayName}</strong>?</div>`,
+      options:shuffle([h.formula, ...wrong3]), correct:h.formula, subject:h.formula };
+  }
+  if (type === 'elem2formula') {
+    const elem = ELEM_BY_SYMBOL[h.symbol];
+    const wrong3 = shuffle(HYDRIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:"Element → Hidrur",
+      body:`<div class="q-element-display"><div class="q-symbol">${h.symbol}</div><div class="q-number">${elem ? elem.name : ''}</div></div><div class="q-text">Quin és l'hidrur de <strong>${elem ? elem.name : h.symbol}</strong>?</div>`,
+      options:shuffle([h.formula, ...wrong3]), correct:h.formula, subject:h.formula };
+  }
+  if (type === 'type2name') {
+    const typeLabel = { metalic:'metàl·lic', acid:'hidràcid (àcid)', especial:'no metàl·lic especial' };
+    const correct = typeLabel[h.type];
+    return { ...base, label:'Classificar Hidrur',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.8rem;letter-spacing:-1px">${h.formula}</div></div><div class="q-text">Quin tipus d'hidrur és <strong>${h.formula}</strong>?</div>`,
+      options:shuffle(['metàl·lic','hidràcid (àcid)','no metàl·lic especial']), correct, subject:h.formula };
+  }
+  // formula2elem
+  const elem = ELEM_BY_SYMBOL[h.symbol];
+  const wrong3 = shuffle(HYDRIDES.filter(x => x.symbol !== h.symbol)).slice(0,3).map(x => {
+    const e = ELEM_BY_SYMBOL[x.symbol]; return e ? e.name : x.symbol;
+  });
+  const correctElemName = elem ? elem.name : h.symbol;
+  return { ...base, label:'Fórmula → Element',
+    body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.8rem;letter-spacing:-1px">${h.formula}</div></div><div class="q-text">De quin element prové <strong>${h.formula}</strong>?</div>`,
+    options:shuffle([correctElemName, ...wrong3]), correct:correctElemName, subject:h.formula };
+}
+
+function getTip(q) {
+  if (q._elemSym && ELEM_TIPS[q._elemSym])         return ELEM_TIPS[q._elemSym];
+  if (q._hydrideFormula && HYDRIDE_TIPS[q._hydrideFormula]) return HYDRIDE_TIPS[q._hydrideFormula];
+  return null;
+}
+
+function showExplanation(q) {
+  const tip = getTip(q);
+  const box = document.getElementById('explanation-box');
+  if (!tip) { box.classList.remove('show'); return; }
+  document.getElementById('expl-rule').innerHTML  = `📖 ${tip.rule}`;
+  document.getElementById('expl-trick').innerHTML = tip.trick;
+  box.classList.add('show');
+}
+
+// ---- Generació de preguntes amb deduplicació ----
+
+function generateQuestions(mode) {
+  const recentSet = loadRecentSet();
+
+  // Construeix pool de combos per al mode
+  let allCombos = [];
+  if      (mode === 'elements') allCombos = shuffle(allElementCombos());
+  else if (mode === 'hydrides') allCombos = shuffle(allHydrideCombos());
+  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos()]);
+
+  // Separa fresques vs recents
+  const fresh  = allCombos.filter(c => !recentSet.has(c.key));
+  const recent = allCombos.filter(c =>  recentSet.has(c.key));
+
+  // Agafa fins a (TOTAL_Q - MAX_REPEAT) fresques, la resta recents
+  const freshTake  = Math.min(TOTAL_Q - MAX_REPEAT, fresh.length);
+  const recentTake = Math.min(MAX_REPEAT, recent.length);
+  const extraFresh = Math.max(0, TOTAL_Q - freshTake - recentTake);
+
+  const selected = shuffle([
+    ...fresh.slice(0, freshTake + extraFresh),
+    ...recent.slice(0, recentTake),
+  ]).slice(0, TOTAL_Q);
+
+  return selected.map(c => {
+    const q = c.kind === 'element'
+      ? buildElementQ(c.type, c.elem)
+      : buildHydrideQ(c.type, c.h);
+    return { ...q, _key: c.key };
+  });
+}
+
+// ---- Control del joc ----
+
+function startGame(mode) {
+  gs = {
+    mode, questions: generateQuestions(mode),
+    currentQ: 0, score: 0, correct: 0, wrong: 0,
+    streak: 0, maxStreak: 0,
+    timerInterval: null, timeLeft: 0,
+    answered: false, lastMode: mode,
+    history: []   // { qnum, label, subject, correct, selected, wasCorrect, timedOut }
+  };
+  showScreen('screen-game');
+  showQuestion();
+}
+
+function showQuestion() {
+  if (gs.currentQ >= gs.questions.length) { endGame(); return; }
+
+  const q = gs.questions[gs.currentQ];
+  gs.answered = false;
+
+  document.getElementById('stat-score').textContent = gs.score;
+  document.getElementById('stat-q').textContent = `${gs.currentQ + 1}/${TOTAL_Q}`;
+  document.getElementById('progress-fill').style.width = `${(gs.currentQ / TOTAL_Q) * 100}%`;
+  document.getElementById('feedback-msg').textContent = '';
+  document.getElementById('feedback-msg').className = 'feedback-msg';
+  document.getElementById('explanation-box').classList.remove('show');
+
+  document.getElementById('q-type-label').textContent = q.label;
+  document.getElementById('q-body').innerHTML = q.body;
+
+  const card = document.getElementById('question-card');
+  card.classList.remove('bounce-in');
+  void card.offsetWidth;
+  card.classList.add('bounce-in');
+
+  const grid = document.getElementById('answers-grid');
+  grid.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(opt, q.correct);
+    grid.appendChild(btn);
+  });
+
+  clearInterval(gs.timerInterval);
+  gs.timeLeft = TIME_PER_Q;
+  updateTimer(gs.timeLeft);
+  gs.timerInterval = setInterval(() => {
+    gs.timeLeft--;
+    updateTimer(gs.timeLeft);
+    if (gs.timeLeft <= 0) {
+      clearInterval(gs.timerInterval);
+      if (!gs.answered) timeOut(q.correct);
+    }
+  }, 1000);
+}
+
+function updateTimer(t) {
+  const circle = document.getElementById('timer-circle');
+  const text   = document.getElementById('timer-text');
+  circle.style.strokeDashoffset = 138 * (1 - t / TIME_PER_Q);
+  circle.style.stroke = t <= 5 ? '#f44336' : t <= 8 ? '#ff9800' : '#ffd700';
+  text.textContent = t;
+  text.style.color = t <= 5 ? '#f44336' : '#e0e0e0';
+}
+
+function selectAnswer(selected, correct) {
+  if (gs.answered) return;
+  gs.answered = true;
+  clearInterval(gs.timerInterval);
+
+  const q = gs.questions[gs.currentQ];
+  const isCorrect = selected === correct;
+
+  document.querySelectorAll('.answer-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct)                      btn.classList.add('correct');
+    else if (btn.textContent === selected && !isCorrect)  btn.classList.add('wrong');
+  });
+
+  gs.history.push({ qnum: gs.currentQ + 1, label: q.label, subject: q.subject,
+    correct, selected, wasCorrect: isCorrect, timedOut: false,
+    tip: isCorrect ? null : getTip(q) });
+
+  const fb = document.getElementById('feedback-msg');
+  if (isCorrect) {
+    gs.correct++;
+    gs.streak++;
+    if (gs.streak > gs.maxStreak) gs.maxStreak = gs.streak;
+    const bonus  = gs.streak >= 3 ? Math.floor(gs.streak * 0.5) * 10 : 0;
+    const points = 100 + bonus + Math.floor(gs.timeLeft * 5);
+    gs.score += points;
+    document.getElementById('stat-score').textContent = gs.score;
+    fb.className = 'feedback-msg correct';
+    const badge = gs.streak >= 3 ? `<span class="streak-badge">🔥 ratxa ${gs.streak}x</span>` : '';
+    fb.innerHTML = `✓ Correcte! +${points} pts ${badge}`;
+  } else {
+    gs.wrong++;
+    gs.streak = 0;
+    fb.className = 'feedback-msg wrong';
+    fb.textContent = `✗ La resposta era: ${correct}`;
+    const card = document.getElementById('question-card');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 300);
+    showExplanation(q);
+    document.getElementById('btn-continue').classList.add('show');
+  }
+
+  if (isCorrect) setTimeout(advanceQuestion, 1500);
+}
+
+function advanceQuestion() {
+  document.getElementById('btn-continue').classList.remove('show');
+  gs.currentQ++;
+  showQuestion();
+}
+
+function timeOut(correct) {
+  gs.answered = true;
+  gs.wrong++;
+  gs.streak = 0;
+
+  const q = gs.questions[gs.currentQ];
+  gs.history.push({ qnum: gs.currentQ + 1, label: q.label, subject: q.subject,
+    correct, selected: null, wasCorrect: false, timedOut: true,
+    tip: getTip(q) });
+
+  document.querySelectorAll('.answer-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct) btn.classList.add('correct');
+  });
+  const fb = document.getElementById('feedback-msg');
+  fb.className = 'feedback-msg wrong';
+  fb.textContent = `⏰ Temps! Era: ${correct}`;
+  showExplanation(q);
+  document.getElementById('btn-continue').classList.add('show');
+}
+
+function endGame() {
+  clearInterval(gs.timerInterval);
+
+  // Guarda les claus usades per evitar repeticions
+  saveRecentKeys(gs.questions.map(q => q._key).filter(Boolean));
+
+  const pct = gs.correct / TOTAL_Q;
+  let emoji, title, sub;
+  if      (pct >= 0.9) { emoji='🏆'; title='Extraordinari!';  sub='Domines la química. Ets un campió!'; }
+  else if (pct >= 0.7) { emoji='🎉'; title='Molt bé!';         sub='Gran resultat. Continua així!'; }
+  else if (pct >= 0.5) { emoji='💪'; title='Bon intent!';      sub='Vas bé. Una mica més de pràctica i ho clavaràs.'; }
+  else                 { emoji='📚'; title='A estudiar!';      sub='No et rendeixis. Usa la taula interactiva per repassar.'; }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${gs.correct}/${TOTAL_Q}`;
+  document.getElementById('result-sub').textContent   = sub;
+
+  // Pills de resum
+  const accuracy = Math.round((gs.correct / TOTAL_Q) * 100);
+  document.getElementById('stat-pills').innerHTML = `
+    <div class="stat-pill good"><div class="pval">${gs.correct}</div><div class="plbl">Correctes</div></div>
+    <div class="stat-pill bad"><div class="pval">${gs.wrong}</div><div class="plbl">Incorrectes</div></div>
+    <div class="stat-pill gold"><div class="pval">${gs.score}</div><div class="plbl">Punts</div></div>
+    <div class="stat-pill blue"><div class="pval">${gs.maxStreak}</div><div class="plbl">Ratxa màx.</div></div>
+    <div class="stat-pill"><div class="pval">${accuracy}%</div><div class="plbl">Precisió</div></div>
+  `;
+
+  // Elements/hidrurs fallats (per repassar)
+  const missed = gs.history.filter(h => !h.wasCorrect).map(h => h.subject);
+  const uniqueMissed = [...new Set(missed)];
+  if (uniqueMissed.length > 0) {
+    document.getElementById('missed-section').style.display = 'block';
+    document.getElementById('missed-chips').innerHTML =
+      uniqueMissed.map(s => `<div class="missed-chip">${s}</div>`).join('');
+  } else {
+    document.getElementById('missed-section').style.display = 'none';
+  }
+
+  // Historial detallat pregunta a pregunta
+  const histHtml = gs.history.map((h, idx) => {
+    if (h.wasCorrect) {
+      return `<div class="history-item ok">
+        <div class="history-icon">✅</div>
+        <div class="history-body">
+          <div class="history-label">${h.label}</div>
+          <div class="history-correct">${h.correct}</div>
+        </div>
+        <div class="history-qnum">P${h.qnum}</div>
+      </div>`;
+    }
+    const wrongLine = h.timedOut
+      ? `<div class="history-timeout">⏰ temps esgotat</div>`
+      : `<div class="history-wrong-ans">Has dit: ${h.selected}</div>`;
+    const tipHtml = h.tip
+      ? `<button class="hist-tip-btn" onclick="toggleHistTip(${idx})">💡 Veure consell</button>
+         <div class="hist-tip-box" id="hist-tip-${idx}">
+           <div class="hist-tip-rule">📖 ${h.tip.rule}</div>
+           <div class="hist-tip-trick">${h.tip.trick}</div>
+         </div>`
+      : '';
+    return `<div class="history-item ko">
+      <div class="history-icon">❌</div>
+      <div class="history-body">
+        <div class="history-label">${h.label}</div>
+        <div class="history-correct">Correcte: <strong>${h.correct}</strong></div>
+        ${wrongLine}
+        ${tipHtml}
+      </div>
+      <div class="history-qnum">P${h.qnum}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('result-history').innerHTML = histHtml;
+
+  const hsKey = `hs_${gs.mode}`;
+  const prev = parseInt(localStorage.getItem(hsKey) || '0');
+  if (gs.score > prev) localStorage.setItem(hsKey, gs.score);
+
+  document.getElementById('btn-play-again').onclick = () => startGame(gs.lastMode);
+  showScreen('screen-results');
+  updateHighscores();
+}
+
+function updateHighscores() {
+  const modes = { elements:'Elements', hydrides:'Hidrurs', mixed:'Mixt' };
+  const parts = [];
+  for (const [k, label] of Object.entries(modes)) {
+    const v = localStorage.getItem(`hs_${k}`);
+    if (v) parts.push(`${label}: <span>${v}</span>`);
+  }
+  document.getElementById('menu-highscores').innerHTML = parts.length
+    ? 'Rècords: ' + parts.join(' · ')
+    : 'Juga per establir el teu rècord';
+}
+
+function toggleHistTip(idx) {
+  const box = document.getElementById(`hist-tip-${idx}`);
+  const btn = box.previousElementSibling;
+  const isOpen = box.classList.toggle('show');
+  btn.textContent = isOpen ? '💡 Amagar consell' : '💡 Veure consell';
+}
+
+// ============================================================
+// REFERÈNCIA FINAL (hidrurs + elements)
+// ============================================================
+
+function toggleRef(id) {
+  const panel  = document.getElementById(`ref-panel-${id}`);
+  const toggle = document.getElementById(`ref-toggle-${id}`);
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+  if (!isOpen && !panel.dataset.rendered) {
+    panel.dataset.rendered = '1';
+    if (id === 'hydrures')  renderRefHydrures(panel);
+    if (id === 'elements')  renderRefElements(panel);
+  }
+}
+
+function renderRefHydrures(panel) {
+  const metalics  = HYDRIDES.filter(h => h.type === 'metalic');
+  const acids     = HYDRIDES.filter(h => h.type === 'acid');
+  const especials = HYDRIDES.filter(h => h.type === 'especial');
+
+  function col(title, list) {
+    const rows = list.map(h => `
+      <div class="ref-hrow">
+        <span class="ref-hformula">${h.formula}</span>
+        <span class="ref-hname">${h.sysName}</span>
+        ${h.commonName ? `<span class="ref-hcommon">${h.commonName}</span>` : ''}
+      </div>`).join('');
+    return `<div class="ref-hcol"><h4>${title}</h4>${rows}</div>`;
+  }
+
+  panel.innerHTML = `
+    <div class="ref-section-title">Tots els hidrurs per tipus</div>
+    <div class="ref-hydride-grid">
+      ${col('Metàl·lics', metalics)}
+      ${col('Hidràcids', acids)}
+      ${col('No metàl·lics especials', especials)}
+    </div>`;
+}
+
+function renderRefElements(panel) {
+  // Períodes 1–6 (els més rellevants per a 4t ESO)
+  const periodsToShow = [1, 2, 3, 4, 5, 6];
+  const sections = periodsToShow.map(p => {
+    const elems = ELEMENTS
+      .filter(e => e.period === p && e.group >= 1 && e.group <= 18)
+      .sort((a, b) => a.group - b.group);
+    const chips = elems.map(e => {
+      const color = CATEGORIES[e.category]?.color || '#888';
+      return `<div class="ref-elem-chip" style="background:${color}22;border-color:${color}55">
+        <span class="rcsym" style="color:${color}">${e.symbol}</span>
+        <span class="rcname">${e.name}</span>
+      </div>`;
+    }).join('');
+    return `<div class="ref-elem-period">
+      <div class="ref-period-label">Període ${p}</div>
+      <div class="ref-elem-chips">${chips}</div>
+    </div>`;
+  }).join('');
+
+  // Llegenda de categories
+  const legend = Object.entries(CATEGORIES)
+    .filter(([k]) => !['lanthanide','actinide'].includes(k))
+    .map(([, v]) => `<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 6px 2px 0;font-size:0.68rem">
+      <span style="width:10px;height:10px;border-radius:3px;background:${v.color};display:inline-block"></span>
+      <span style="color:${v.color}">${v.label}</span>
+    </span>`).join('');
+
+  panel.innerHTML = `
+    <div class="ref-section-title">Llegenda de categories</div>
+    <div style="margin-bottom:0.8rem;line-height:1.8">${legend}</div>
+    <div class="ref-section-title">Elements per períodes (1–6)</div>
+    ${sections}`;
+}
+
+// ============================================================
+// TAULA PERIÒDICA
+// ============================================================
+
+function renderPeriodicTable() {
+  // Llegenda
+  document.getElementById('pt-legend').innerHTML = Object.entries(CATEGORIES).map(([k, v]) =>
+    `<div class="legend-item"><div class="legend-color" style="background:${v.color}"></div><span style="color:${v.color}">${v.label}</span></div>`
+  ).join('');
+
+  // Matriu 9×18
+  const matrix = Array.from({length: 10}, () => Array(19).fill(null));
+  ELEMENTS.forEach(e => {
+    if (e.period <= 7 && e.group >= 1 && e.group <= 18) matrix[e.period][e.group] = e;
+    else if (e.period === 8 || e.period === 9)          matrix[e.period][e.group] = e;
+  });
+
+  const grid = document.getElementById('pt-grid');
+  grid.innerHTML = '';
+
+  for (let row = 1; row <= 9; row++) {
+    if (row === 8) {
+      for (let c = 1; c <= 18; c++) {
+        const sp = document.createElement('div');
+        sp.className = 'pt-cell pt-spacer';
+        grid.appendChild(sp);
+      }
+    }
+    for (let col = 1; col <= 18; col++) {
+      const elem = matrix[row]?.[col];
+      const cell = document.createElement('div');
+      if (elem) {
+        cell.className = `pt-cell cat-${elem.category}`;
+        const shortName = elem.name.length > 8 ? elem.name.slice(0,7)+'.' : elem.name;
+        cell.innerHTML = `<div class="pt-num">${elem.number}</div><div class="pt-sym">${elem.symbol}</div><div class="pt-name">${shortName}</div>`;
+        cell.onclick = () => showElementPopup(elem);
+      } else {
+        cell.className = 'pt-cell pt-spacer';
+        if ((row === 6 && col === 4) || (row === 7 && col === 4)) {
+          cell.style.opacity = '0.2';
+          cell.innerHTML = `<div class="pt-sym" style="font-size:0.5rem">${row === 6 ? 'La-Lu' : 'Ac-Lr'}</div>`;
+        }
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  renderHydridesRef();
+}
+
+function showElementPopup(elem) {
+  const popup   = document.getElementById('element-popup');
+  const hydride = HYDRIDE_BY_SYMBOL[elem.symbol];
+  const catColor = CATEGORIES[elem.category]?.color || '#888';
+  const catLabel = CATEGORIES[elem.category]?.label || elem.category;
+
+  const hydrideHtml = hydride
+    ? `<div class="popup-hydride"><strong>Hidrur:</strong> ${hydride.formula}<br><span style="color:var(--muted);font-size:0.75rem">${hydride.sysName}${hydride.commonName ? ' / ' + hydride.commonName : ''}</span></div>`
+    : `<div class="popup-hydride" style="opacity:0.5">Sense hidrur estable conegut</div>`;
+
+  popup.innerHTML = `
+    <div class="popup-main">
+      <div class="popup-symbol" style="color:${catColor}">${elem.symbol}</div>
+      <div class="popup-info">
+        <h3>${elem.name}</h3>
+        <div class="popup-num">Núm. ${elem.number} · Massa: ${elem.weight} u</div>
+        <div class="popup-num">Període ${elem.period} · Grup ${elem.group}</div>
+      </div>
+    </div>
+    <div class="popup-tags"><span class="popup-tag" style="background:${catColor}33;color:${catColor}">${catLabel}</span></div>
+    ${hydrideHtml}
+  `;
+  popup.classList.add('show');
+  clearTimeout(popup._t);
+  popup._t = setTimeout(() => popup.classList.remove('show'), 5000);
+}
+
+document.addEventListener('click', e => {
+  const popup = document.getElementById('element-popup');
+  if (popup && !popup.contains(e.target) && !e.target.closest('.pt-cell'))
+    popup.classList.remove('show');
+});
+
+function renderHydridesRef() {
+  const container = document.getElementById('hydride-tables');
+  const metalics  = HYDRIDES.filter(h => h.type === 'metalic');
+  const acids     = HYDRIDES.filter(h => h.type === 'acid');
+  const especials = HYDRIDES.filter(h => h.type === 'especial');
+
+  function makeTable(title, list, showCommon) {
+    const rows = list.map(h => `
+      <div class="hydride-row">
+        <span>${ELEM_BY_SYMBOL[h.symbol]?.name || h.symbol}</span>
+        <span class="hydride-formula">${h.formula}</span>
+        <span style="color:var(--muted);font-size:0.75rem">${showCommon && h.commonName ? h.commonName : h.sysName}</span>
+      </div>`).join('');
+    return `<div class="hydride-table-section"><h3>${title}</h3>${rows}</div>`;
+  }
+
+  container.innerHTML =
+    makeTable('Metàl·lics', metalics, false) +
+    makeTable('Hidràcids', acids, true) +
+    makeTable('No metàl·lics especials', especials, true);
+}
+
+// ============================================================
+// NAVEGACIÓ
+// ============================================================
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-table') renderPeriodicTable();
+}
+
+function goMenu() {
+  clearInterval(gs.timerInterval);
+  showScreen('screen-menu');
+  updateHighscores();
+}
+
+// Init
+updateHighscores();
+</script>
+</body>
+</html>
