@@ -103,6 +103,7 @@
 
   .card-elements  { background: linear-gradient(135deg, #1a1a2e, #16213e); }
   .card-hydrides  { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
+  .card-salts     { background: linear-gradient(135deg, #1a1a2e, #2e1a2e); }
   .card-mixed     { background: linear-gradient(135deg, #1a1a2e, #1b1b3a); }
   .card-table     { background: linear-gradient(135deg, #1a1a2e, #0d1b2a); }
 
@@ -223,6 +224,57 @@
     gap: 0.75rem;
     margin-bottom: 1.5rem;
   }
+
+  .text-input-container {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .text-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .text-input-group label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .text-input-field {
+    background: var(--surface);
+    border: 2px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .text-input-field:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .text-input-field.correct { border-color: var(--success); background: rgba(76,175,80,0.1); }
+  .text-input-field.wrong   { border-color: var(--error);   background: rgba(244,67,54,0.1); }
+  
+  .btn-check {
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 0.5rem;
+  }
+  .btn-check:hover:not(:disabled) { transform: translateY(-2px); opacity: 0.9; }
+  .btn-check:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .answer-btn {
     background: var(--surface);
@@ -727,6 +779,11 @@
       <div class="title">Hidrurs</div>
       <div class="desc">Fórmules i nomenclatura d'hidrurs</div>
     </div>
+    <div class="menu-card card-salts" onclick="startGame('salts')">
+      <div class="icon">🧂</div>
+      <div class="title">Sals Binàries</div>
+      <div class="desc">Fórmules i nomenclatura de sals</div>
+    </div>
     <div class="menu-card card-mixed" onclick="startGame('mixed')">
       <div class="icon">⚡</div>
       <div class="title">Repte Mixt</div>
@@ -774,10 +831,28 @@
   </div>
 
   <div class="answers-grid" id="answers-grid"></div>
+  <div class="text-input-container" id="text-input-container" style="display: none;">
+    <div class="text-input-group">
+      <label for="input-sys">Nomenclatura Sistemàtica</label>
+      <input type="text" id="input-sys" class="text-input-field" placeholder="Ex: Triclorur de ferro" autocomplete="off" onkeydown="if(event.key==='Enter') document.getElementById('input-stock').focus()">
+    </div>
+    <div class="text-input-group">
+      <label for="input-stock">Nomenclatura de Stock</label>
+      <input type="text" id="input-stock" class="text-input-field" placeholder="Ex: Clorur de ferro (III)" autocomplete="off" onkeydown="if(event.key==='Enter') checkTextInput()">
+    </div>
+    <div style="display:flex; gap:0.5rem; margin-top:0.5rem">
+      <button class="btn-check" style="flex:1" id="btn-check-text" onclick="checkTextInput()">Comprovar</button>
+      <button class="btn-check" style="flex:0 0 auto; background:rgba(255,255,255,0.1); color:var(--text)" id="btn-hint" onclick="showHint()">💡 Pista</button>
+    </div>
+    <div id="hint-box" style="display:none; font-size:0.85rem; color:var(--gold); padding:0.75rem; border:1px dashed var(--gold); border-radius:8px; line-height:1.4"></div>
+  </div>
   <div class="feedback-msg" id="feedback-msg"></div>
   <div class="explanation-box" id="explanation-box">
     <div class="expl-rule"  id="expl-rule"></div>
     <div class="expl-trick" id="expl-trick"></div>
+    <div id="expl-image-container" style="display:none; text-align:center; margin-top:1rem;">
+      <img src="valencies.png" alt="Mètode per creuar valències" style="max-width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.2);">
+    </div>
   </div>
   <button class="btn-continue" id="btn-continue" onclick="advanceQuestion()">Continuar →</button>
 </div>
@@ -997,6 +1072,57 @@ const HYDRIDES = [
 const HYDRIDE_BY_SYMBOL = {};
 HYDRIDES.forEach(h => HYDRIDE_BY_SYMBOL[h.symbol] = h);
 
+// Sals binàries
+const SALTS = [
+  { formula: 'NaCl', sysName: 'clorur de sodi', stockName: 'clorur de sodi' },
+  { formula: 'CaF2', sysName: 'difluorur de calci', stockName: 'fluorur de calci' },
+  { formula: 'KI', sysName: 'iodur de potassi', stockName: 'iodur de potassi' },
+  { formula: 'MgBr2', sysName: 'dibromur de magnesi', stockName: 'bromur de magnesi' },
+  { formula: 'FeS', sysName: 'monosulfur de ferro', stockName: 'sulfur de ferro (II)' },
+  { formula: 'Fe2S3', sysName: 'trisulfur de diferro', stockName: 'sulfur de ferro (III)' },
+  { formula: 'CuCl2', sysName: 'diclorur de coure', stockName: 'clorur de coure (II)' },
+  { formula: 'AgCl', sysName: 'clorur de plata', stockName: 'clorur de plata' },
+  { formula: 'AlCl3', sysName: "triclorur d'alumini", stockName: "clorur d'alumini" },
+  { formula: 'ZnS', sysName: 'sulfur de zinc', stockName: 'sulfur de zinc' },
+  { formula: 'PbI2', sysName: 'diiodur de plom', stockName: 'iodur de plom (II)' },
+  { formula: 'Na2S', sysName: 'monosulfur de disodi', stockName: 'sulfur de sodi' },
+  { formula: 'KBr', sysName: 'bromur de potassi', stockName: 'bromur de potassi' },
+  { formula: 'LiCl', sysName: 'clorur de liti', stockName: 'clorur de liti' },
+  { formula: 'CaCl2', sysName: 'diclorur de calci', stockName: 'clorur de calci' },
+  { formula: 'CaS', sysName: 'sulfur de calci', stockName: 'sulfur de calci' },
+  { formula: 'Al2S3', sysName: "trisulfur de dialumini", stockName: "sulfur d'alumini" },
+  { formula: 'CuI', sysName: 'iodur de coure', stockName: 'iodur de coure (I)' },
+  { formula: 'AuCl3', sysName: "triclorur d'or", stockName: "clorur d'or (III)" },
+  { formula: 'BaCl2', sysName: 'diclorur de bari', stockName: 'clorur de bari' }
+];
+
+function normalizeStr(str) {
+  return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, ' ');
+}
+
+const SALT_TIPS = {
+  'NaCl': { rule: 'Clorur (Cl -1) + Sodi (Na +1)', trick: 'Na i Cl s\'aparellen 1 a 1 (1x1 = 1x1).' },
+  'CaF2': { rule: 'Fluorur (F -1) + Calci (Ca +2)', trick: 'El 2 de la valència del Calci passa al Fluor.' },
+  'KI': { rule: 'Iodur (I -1) + Potassi (K +1)', trick: 'Ambdós tenen valència 1, per tant KI directe.' },
+  'MgBr2': { rule: 'Bromur (Br -1) + Magnesi (Mg +2)', trick: 'El 2 de la valència del Magnesi baixa al Brom.' },
+  'FeS': { rule: 'Sulfur (S -2) + Ferro (Fe +2)', trick: 'Les valències 2 i 2 se simplifiquen, queda FeS.' },
+  'Fe2S3': { rule: 'Sulfur (S -2) + Ferro (Fe +3)', trick: 'S\'intercanvien: el 2 del Sofre va al Ferro i el 3 del Ferro al Sofre.' },
+  'CuCl2': { rule: 'Clorur (Cl -1) + Coure (Cu +2)', trick: 'El 2 de la valència del Coure passa al Clor.' },
+  'AgCl': { rule: 'Clorur (Cl -1) + Plata (Ag +1)', trick: 'Plata només té valència +1. Llavors 1 a 1.' },
+  'AlCl3': { rule: 'Clorur (Cl -1) + Alumini (Al +3)', trick: 'El 3 de l\'Alumini passa directament al Clor.' },
+  'ZnS': { rule: 'Sulfur (S -2) + Zinc (Zn +2)', trick: 'Valències 2 i 2 s\'anul·len o simplifiquen: ZnS.' },
+  'PbI2': { rule: 'Iodur (I -1) + Plom (Pb +2)', trick: 'El Plom actua amb +2, per tant passa un 2 al Iode.' },
+  'Na2S': { rule: 'Sulfur (S -2) + Sodi (Na +1)', trick: 'El 2 del Sofre passa al Sodi.' },
+  'KBr': { rule: 'Bromur (Br -1) + Potassi (K +1)', trick: 'Molt simple: 1 i 1.' },
+  'LiCl': { rule: 'Clorur (Cl -1) + Liti (Li +1)', trick: 'Liti i Clor, valències de 1, es combinen 1 a 1.' },
+  'CaCl2': { rule: 'Clorur (Cl -1) + Calci (Ca +2)', trick: 'El 2 del Calci passa com a subíndex del Clor.' },
+  'CaS': { rule: 'Sulfur (S -2) + Calci (Ca +2)', trick: 'Calci 2 i Sofre 2. Se simplifica a 1:1.' },
+  'Al2S3': { rule: 'Sulfur (S -2) + Alumini (Al +3)', trick: 'Creuem valències: l\'Alumini dóna 3, el Sofre dóna 2.' },
+  'CuI': { rule: 'Iodur (I -1) + Coure (Cu +1)', trick: 'El coure actua amb +1, queda 1 a 1.' },
+  'AuCl3': { rule: 'Clorur (Cl -1) + Or (Au +3)', trick: 'L\'Or (Au) actua amb +3, de manera que passen 3 al Clor.' },
+  'BaCl2': { rule: 'Clorur (Cl -1) + Bari (Ba +2)', trick: 'El 2 del Bari baixa al Clor.' }
+};
+
 // ============================================================
 // CONSELLS I TRUCS MNEMOTÈCNICS
 // ============================================================
@@ -1142,6 +1268,15 @@ function allHydrideCombos() {
   return all;
 }
 
+function allSaltCombos() {
+  const types = ['formula2name','name2formula','formula2write'];
+  const all   = [];
+  for (const type of types)
+    for (const s of SALTS)
+      all.push({ kind:'salt', type, s, key: `s_${type}_${s.formula}` });
+  return all;
+}
+
 // ---- Constructors de pregunta a partir d'un combo ----
 
 function buildElementQ(type, elem) {
@@ -1219,18 +1354,61 @@ function buildHydrideQ(type, h) {
     options:shuffle([correctElemName, ...wrong3]), correct:correctElemName, subject:h.formula };
 }
 
+function buildSaltQ(type, s) {
+  const base = { _elemSym: null, _hydrideFormula: null, _saltFormula: s.formula };
+  const capSys = s.sysName.charAt(0).toUpperCase() + s.sysName.slice(1);
+  if (type === 'formula2name') {
+    const wrong3 = shuffle(SALTS.filter(x => x.formula !== s.formula)).slice(0,3).map(x => x.sysName.charAt(0).toUpperCase() + x.sysName.slice(1));
+    return { ...base, label:'Fórmula → Nom',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.8rem;letter-spacing:-1px">${s.formula}</div></div><div class="q-text">Com s'anomena <strong>${s.formula}</strong> en nomenclatura sistemàtica?</div>`,
+      options:shuffle([capSys, ...wrong3]), correct:capSys, subject:s.formula };
+  }
+  if (type === 'name2formula') {
+    const wrong3 = shuffle(SALTS.filter(x => x.formula !== s.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:'Nom → Fórmula',
+      body:`<div class="q-text">Quina és la fórmula de <strong>${capSys}</strong>?</div>`,
+      options:shuffle([s.formula, ...wrong3]), correct:s.formula, subject:s.formula };
+  }
+  if (type === 'formula2write') {
+    return { ...base, label:'Fórmula → Escriure', inputType: 'text',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.8rem;letter-spacing:-1px">${s.formula}</div></div><div class="q-text">Escriu el nom de <strong>${s.formula}</strong> en les dues nomenclatures:</div>`,
+      correctSys: s.sysName, correctStock: s.stockName, subject:s.formula };
+  }
+  return base;
+}
+
 function getTip(q) {
   if (q._elemSym && ELEM_TIPS[q._elemSym])         return ELEM_TIPS[q._elemSym];
   if (q._hydrideFormula && HYDRIDE_TIPS[q._hydrideFormula]) return HYDRIDE_TIPS[q._hydrideFormula];
+  if (q._saltFormula && SALT_TIPS[q._saltFormula]) return SALT_TIPS[q._saltFormula];
+  if (q._saltFormula) return { rule: "A les sals binàries, el no-metall acaba en '-ur' i actua amb la seva valència negativa. El metall actua amb la positiva.", trick: "S'intercanvien les valències i se simplifica si és possible!" };
   return null;
+}
+
+function showHint() {
+  const q = gs.questions[gs.currentQ];
+  const tip = getTip(q);
+  if (!tip) return;
+  const hb = document.getElementById('hint-box');
+  hb.innerHTML = `<strong>Pista:</strong> ${tip.rule}<br><em>${tip.trick}</em>`;
+  hb.style.display = 'block';
+  document.getElementById('btn-hint').disabled = true;
 }
 
 function showExplanation(q) {
   const tip = getTip(q);
   const box = document.getElementById('explanation-box');
+  const imgCont = document.getElementById('expl-image-container');
   if (!tip) { box.classList.remove('show'); return; }
   document.getElementById('expl-rule').innerHTML  = `📖 ${tip.rule}`;
   document.getElementById('expl-trick').innerHTML = tip.trick;
+  
+  if (q._saltFormula) {
+    imgCont.style.display = 'block';
+  } else {
+    imgCont.style.display = 'none';
+  }
+  
   box.classList.add('show');
 }
 
@@ -1243,7 +1421,8 @@ function generateQuestions(mode) {
   let allCombos = [];
   if      (mode === 'elements') allCombos = shuffle(allElementCombos());
   else if (mode === 'hydrides') allCombos = shuffle(allHydrideCombos());
-  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos()]);
+  else if (mode === 'salts')    allCombos = shuffle(allSaltCombos());
+  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos()]);
 
   // Separa fresques vs recents
   const fresh  = allCombos.filter(c => !recentSet.has(c.key));
@@ -1260,9 +1439,10 @@ function generateQuestions(mode) {
   ]).slice(0, TOTAL_Q);
 
   return selected.map(c => {
-    const q = c.kind === 'element'
-      ? buildElementQ(c.type, c.elem)
-      : buildHydrideQ(c.type, c.h);
+    let q;
+    if (c.kind === 'element') q = buildElementQ(c.type, c.elem);
+    else if (c.kind === 'hydride') q = buildHydrideQ(c.type, c.h);
+    else q = buildSaltQ(c.type, c.s);
     return { ...q, _key: c.key };
   });
 }
@@ -1304,14 +1484,33 @@ function showQuestion() {
   card.classList.add('bounce-in');
 
   const grid = document.getElementById('answers-grid');
-  grid.innerHTML = '';
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'answer-btn';
-    btn.textContent = opt;
-    btn.onclick = () => selectAnswer(opt, q.correct);
-    grid.appendChild(btn);
-  });
+  const inputContainer = document.getElementById('text-input-container');
+
+  if (q.inputType === 'text') {
+    grid.style.display = 'none';
+    inputContainer.style.display = 'flex';
+    document.getElementById('input-sys').value = '';
+    document.getElementById('input-sys').className = 'text-input-field';
+    document.getElementById('input-sys').disabled = false;
+    document.getElementById('input-stock').value = '';
+    document.getElementById('input-stock').className = 'text-input-field';
+    document.getElementById('input-stock').disabled = false;
+    document.getElementById('btn-check-text').disabled = false;
+    document.getElementById('btn-hint').disabled = false;
+    document.getElementById('hint-box').style.display = 'none';
+    setTimeout(() => document.getElementById('input-sys').focus(), 100);
+  } else {
+    grid.style.display = 'grid';
+    inputContainer.style.display = 'none';
+    grid.innerHTML = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(opt, q.correct);
+      grid.appendChild(btn);
+    });
+  }
 
   clearInterval(gs.timerInterval);
   gs.timeLeft = TIME_PER_Q;
@@ -1335,12 +1534,32 @@ function updateTimer(t) {
   text.style.color = t <= 5 ? '#f44336' : '#e0e0e0';
 }
 
+function checkTextInput() {
+  if (gs.answered) return;
+  
+  const q = gs.questions[gs.currentQ];
+  const iSys = document.getElementById('input-sys');
+  const iStock = document.getElementById('input-stock');
+  
+  const isSysOk = normalizeStr(iSys.value) === normalizeStr(q.correctSys);
+  const isStockOk = normalizeStr(iStock.value) === normalizeStr(q.correctStock);
+  const isCorrect = isSysOk && isStockOk;
+  
+  iSys.disabled = true; iStock.disabled = true;
+  document.getElementById('btn-check-text').disabled = true;
+  document.getElementById('btn-hint').disabled = true;
+  
+  iSys.classList.add(isSysOk ? 'correct' : 'wrong');
+  iStock.classList.add(isStockOk ? 'correct' : 'wrong');
+  
+  const selected = `Sist: ${iSys.value || '-'} | Stock: ${iStock.value || '-'}`;
+  const correct = `Sist: ${q.correctSys} | Stock: ${q.correctStock}`;
+  
+  processResult(isCorrect, selected, correct);
+}
+
 function selectAnswer(selected, correct) {
   if (gs.answered) return;
-  gs.answered = true;
-  clearInterval(gs.timerInterval);
-
-  const q = gs.questions[gs.currentQ];
   const isCorrect = selected === correct;
 
   document.querySelectorAll('.answer-btn').forEach(btn => {
@@ -1348,6 +1567,28 @@ function selectAnswer(selected, correct) {
     if (btn.textContent === correct)                      btn.classList.add('correct');
     else if (btn.textContent === selected && !isCorrect)  btn.classList.add('wrong');
   });
+
+  processResult(isCorrect, selected, correct);
+}
+
+function processResult(isCorrect, selected, correct, isTimeout = false) {
+  gs.answered = true;
+  clearInterval(gs.timerInterval);
+  const q = gs.questions[gs.currentQ];
+
+  if (isTimeout) {
+    gs.wrong++;
+    gs.streak = 0;
+    gs.history.push({ qnum: gs.currentQ + 1, label: q.label, subject: q.subject,
+      correct, selected: null, wasCorrect: false, timedOut: true,
+      tip: getTip(q) });
+    const fb = document.getElementById('feedback-msg');
+    fb.className = 'feedback-msg wrong';
+    fb.textContent = `⏰ Temps! Era: ${correct}`;
+    showExplanation(q);
+    document.getElementById('btn-continue').classList.add('show');
+    return;
+  }
 
   gs.history.push({ qnum: gs.currentQ + 1, label: q.label, subject: q.subject,
     correct, selected, wasCorrect: isCorrect, timedOut: false,
@@ -1387,24 +1628,21 @@ function advanceQuestion() {
 }
 
 function timeOut(correct) {
-  gs.answered = true;
-  gs.wrong++;
-  gs.streak = 0;
-
   const q = gs.questions[gs.currentQ];
-  gs.history.push({ qnum: gs.currentQ + 1, label: q.label, subject: q.subject,
-    correct, selected: null, wasCorrect: false, timedOut: true,
-    tip: getTip(q) });
-
-  document.querySelectorAll('.answer-btn').forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent === correct) btn.classList.add('correct');
-  });
-  const fb = document.getElementById('feedback-msg');
-  fb.className = 'feedback-msg wrong';
-  fb.textContent = `⏰ Temps! Era: ${correct}`;
-  showExplanation(q);
-  document.getElementById('btn-continue').classList.add('show');
+  let actualCorrect = correct;
+  if (q.inputType === 'text') {
+    actualCorrect = `Sist: ${q.correctSys} | Stock: ${q.correctStock}`;
+    document.getElementById('input-sys').disabled = true;
+    document.getElementById('input-stock').disabled = true;
+    document.getElementById('btn-check-text').disabled = true;
+    document.getElementById('btn-hint').disabled = true;
+  } else {
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === correct) btn.classList.add('correct');
+    });
+  }
+  processResult(false, null, actualCorrect, true);
 }
 
 function endGame() {
@@ -1491,7 +1729,7 @@ function endGame() {
 }
 
 function updateHighscores() {
-  const modes = { elements:'Elements', hydrides:'Hidrurs', mixed:'Mixt' };
+  const modes = { elements:'Elements', hydrides:'Hidrurs', salts:'Sals', mixed:'Mixt' };
   const parts = [];
   for (const [k, label] of Object.entries(modes)) {
     const v = localStorage.getItem(`hs_${k}`);
