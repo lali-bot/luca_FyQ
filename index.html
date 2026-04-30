@@ -104,6 +104,7 @@
   .card-elements  { background: linear-gradient(135deg, #1a1a2e, #16213e); }
   .card-hydrides  { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
   .card-salts     { background: linear-gradient(135deg, #1a1a2e, #2e1a2e); }
+  .card-hydroxides{ background: linear-gradient(135deg, #1a1a2e, #1a3a2e); }
   .card-mixed     { background: linear-gradient(135deg, #1a1a2e, #1b1b3a); }
   .card-table     { background: linear-gradient(135deg, #1a1a2e, #0d1b2a); }
 
@@ -760,6 +761,112 @@
   }
   .btn-continue.show { display: block; animation: fadeUp 0.25s ease; }
   .btn-continue:hover { background: #ff2d4a; transform: translateY(-2px); }
+
+  /* ====== HIDROXIDS TEORIA ====== */
+  #screen-hydroxides-theory {
+    min-height: 100vh; display: none; padding: 1.5rem;
+    overflow-y: auto;
+  }
+  #screen-hydroxides-theory.active { display: block; }
+
+  .theory-container {
+    max-width: 720px; margin: 0 auto;
+  }
+  .theory-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .theory-title {
+    font-size: 1.6rem; font-weight: 800;
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .theory-section {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .theory-section h2 {
+    font-size: 1.1rem; font-weight: 700;
+    color: #81c784; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .theory-section p, .theory-section li {
+    font-size: 0.9rem; color: rgba(255,255,255,0.85);
+    line-height: 1.7; margin-bottom: 0.5rem;
+  }
+  .theory-section ul { padding-left: 1.2rem; margin-bottom: 0.75rem; }
+  .theory-formula-box {
+    background: var(--surface2);
+    border: 1px solid rgba(76,175,80,0.3);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    margin: 1rem 0;
+  }
+  .theory-formula-big {
+    font-size: 2rem; font-weight: 900;
+    color: #81c784; letter-spacing: 2px;
+  }
+  .theory-formula-label {
+    font-size: 0.78rem; color: var(--muted);
+    margin-top: 0.3rem;
+  }
+  .theory-example-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.75rem; margin: 1rem 0;
+  }
+  @media (max-width: 500px) { .theory-example-grid { grid-template-columns: 1fr; } }
+  .theory-example {
+    background: rgba(76,175,80,0.08);
+    border: 1px solid rgba(76,175,80,0.2);
+    border-radius: 10px;
+    padding: 0.75rem;
+    text-align: center;
+  }
+  .theory-example .te-formula {
+    font-family: monospace; font-weight: 700;
+    color: var(--gold); font-size: 1.1rem;
+  }
+  .theory-example .te-name {
+    font-size: 0.8rem; color: rgba(255,255,255,0.8);
+    margin-top: 0.2rem;
+  }
+  .theory-example .te-stock {
+    font-size: 0.75rem; color: var(--muted);
+    font-style: italic;
+  }
+  .theory-table {
+    width: 100%; border-collapse: collapse; margin: 0.75rem 0;
+    font-size: 0.82rem;
+  }
+  .theory-table th {
+    background: rgba(76,175,80,0.15);
+    color: #81c784; font-weight: 700;
+    padding: 0.5rem; text-align: left;
+    border-bottom: 1px solid rgba(76,175,80,0.3);
+  }
+  .theory-table td {
+    padding: 0.45rem 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.85);
+  }
+  .theory-table td:first-child { font-family: monospace; font-weight: 700; color: var(--gold); }
+
+  .btn-play-hydroxides {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: #0d0d1a; border: none;
+    padding: 1rem; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-play-hydroxides:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(76,175,80,0.3); }
 </style>
 </head>
 <body>
@@ -767,7 +874,7 @@
 <!-- ============ MENÚ ============ -->
 <div id="screen-menu" class="screen active">
   <div class="logo">⚗️ ChemQuest</div>
-  <div class="logo-sub">Taula Periòdica · Hidrurs</div>
+  <div class="logo-sub">Taula Periòdica · Hidrurs · Hidroxids</div>
   <div class="menu-grid">
     <div class="menu-card card-elements" onclick="startGame('elements')">
       <div class="icon">🔬</div>
@@ -783,6 +890,11 @@
       <div class="icon">🧂</div>
       <div class="title">Sals Binàries</div>
       <div class="desc">Fórmules i nomenclatura de sals</div>
+    </div>
+    <div class="menu-card card-hydroxides" onclick="showScreen('screen-hydroxides-theory')">
+      <div class="icon">🧫</div>
+      <div class="title">Hidroxids</div>
+      <div class="desc">Teoria i joc d'hidròxids</div>
     </div>
     <div class="menu-card card-mixed" onclick="startGame('mixed')">
       <div class="icon">⚡</div>
@@ -906,6 +1018,122 @@
     <div class="hydride-tables" id="hydride-tables"></div>
   </div>
   <div class="element-popup" id="element-popup"></div>
+</div>
+
+<!-- ============ HIDROXIDS — TEORIA ============ -->
+<div id="screen-hydroxides-theory" class="screen">
+  <div class="theory-container">
+    <div class="theory-header">
+      <button class="btn-back" onclick="goMenu()">← Menú</button>
+      <div class="theory-title">🧫 Hidroxids (Bases)</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>📖 Què és un hidròxid?</h2>
+      <p>Un <strong>hidròxid</strong> (o <strong>base</strong>) és un compost format per un <strong>metall</strong> + el grup <strong>hidroxil (OH⁻)</strong>.</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big">M(OH)<sub>n</sub></div>
+        <div class="theory-formula-label">M = metall · n = valència del metall · OH⁻ = grup hidroxil</div>
+      </div>
+      <p>El grup OH sempre actua amb càrrega <strong>−1</strong>. Per tant, el subíndex del grup OH coincideix amb la <strong>valència del metall</strong>.</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>⚗️ Com es formen?</h2>
+      <p>Els hidròxids es formen quan un <strong>òxid metàl·lic</strong> reacciona amb <strong>aigua</strong>:</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big" style="font-size:1.3rem">Òxid metàl·lic + H₂O → Hidròxid</div>
+        <div class="theory-formula-label">Exemple: Na₂O + H₂O → 2 NaOH</div>
+      </div>
+      <ul>
+        <li>El <strong>sodi (Na)</strong> té valència +1 → NaOH (1 sol OH)</li>
+        <li>El <strong>calci (Ca)</strong> té valència +2 → Ca(OH)₂ (2 grups OH)</li>
+        <li>El <strong>alumini (Al)</strong> té valència +3 → Al(OH)₃ (3 grups OH)</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🎬 Vídeo explicatiu</h2>
+      <p>Mira aquest vídeo per entendre millor els hidròxids:</p>
+      <a href="https://www.youtube.com/watch?v=b2Ao2ZShR68" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:1rem;background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.25);border-radius:12px;padding:1rem 1.25rem;margin-top:0.75rem;text-decoration:none;transition:all 0.15s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(255,0,0,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,0,0,0.25)';this.style.transform='none'">
+        <div style="font-size:2.5rem;line-height:1;">▶️</div>
+        <div>
+          <div style="font-weight:700;color:#ff6b6b;font-size:1rem;margin-bottom:0.2rem;">Veure vídeo a YouTube</div>
+          <div style="font-size:0.8rem;color:var(--muted);">Explicació completa dels hidròxids — nomenclatura i fórmules</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="theory-section">
+      <h2>📝 Nomenclatura</h2>
+      <p>Hi ha <strong>dues</strong> maneres d'anomenar els hidròxids:</p>
+      <p><strong>1. Sistemàtica (IUPAC):</strong> Prefix numèric + "hidròxid de" + metall</p>
+      <ul>
+        <li>NaOH → <em>Hidròxid de sodi</em> (mono- s'omet)</li>
+        <li>Ca(OH)₂ → <em>Dihidròxid de calci</em></li>
+        <li>Fe(OH)₃ → <em>Trihidròxid de ferro</em></li>
+      </ul>
+      <p><strong>2. Stock:</strong> "Hidròxid de" + metall + (valència en romans)</p>
+      <ul>
+        <li>NaOH → <em>Hidròxid de sodi</em> (sense romans si només té 1 valència)</li>
+        <li>Fe(OH)₂ → <em>Hidròxid de ferro (II)</em></li>
+        <li>Fe(OH)₃ → <em>Hidròxid de ferro (III)</em></li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🔢 Prefixos numèrics</h2>
+      <table class="theory-table">
+        <tr><th>Subíndex</th><th>Prefix</th><th>Exemple</th></tr>
+        <tr><td>1</td><td>(s'omet) / mono-</td><td>NaOH → Hidròxid de sodi</td></tr>
+        <tr><td>2</td><td>di-</td><td>Ca(OH)₂ → Dihidròxid de calci</td></tr>
+        <tr><td>3</td><td>tri-</td><td>Al(OH)₃ → Trihidròxid d'alumini</td></tr>
+        <tr><td>4</td><td>tetra-</td><td>Sn(OH)₄ → Tetrahidròxid d'estany</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>🧪 Tots els hidròxids per estudiar</h2>
+      <table class="theory-table" id="theory-hydroxides-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Stock</th></tr>
+        <tr><td>NaOH</td><td>Hidròxid de sodi</td><td>Hidròxid de sodi</td></tr>
+        <tr><td>KOH</td><td>Hidròxid de potassi</td><td>Hidròxid de potassi</td></tr>
+        <tr><td>LiOH</td><td>Hidròxid de liti</td><td>Hidròxid de liti</td></tr>
+        <tr><td>Ca(OH)₂</td><td>Dihidròxid de calci</td><td>Hidròxid de calci</td></tr>
+        <tr><td>Mg(OH)₂</td><td>Dihidròxid de magnesi</td><td>Hidròxid de magnesi</td></tr>
+        <tr><td>Ba(OH)₂</td><td>Dihidròxid de bari</td><td>Hidròxid de bari</td></tr>
+        <tr><td>Al(OH)₃</td><td>Trihidròxid d'alumini</td><td>Hidròxid d'alumini</td></tr>
+        <tr><td>Fe(OH)₂</td><td>Dihidròxid de ferro</td><td>Hidròxid de ferro (II)</td></tr>
+        <tr><td>Fe(OH)₃</td><td>Trihidròxid de ferro</td><td>Hidròxid de ferro (III)</td></tr>
+        <tr><td>Cu(OH)₂</td><td>Dihidròxid de coure</td><td>Hidròxid de coure (II)</td></tr>
+        <tr><td>Zn(OH)₂</td><td>Dihidròxid de zinc</td><td>Hidròxid de zinc</td></tr>
+        <tr><td>Pb(OH)₂</td><td>Dihidròxid de plom</td><td>Hidròxid de plom (II)</td></tr>
+        <tr><td>AgOH</td><td>Hidròxid de plata</td><td>Hidròxid de plata</td></tr>
+        <tr><td>Sn(OH)₂</td><td>Dihidròxid d'estany</td><td>Hidròxid d'estany (II)</td></tr>
+        <tr><td>Sn(OH)₄</td><td>Tetrahidròxid d'estany</td><td>Hidròxid d'estany (IV)</td></tr>
+        <tr><td>Au(OH)₃</td><td>Trihidròxid d'or</td><td>Hidròxid d'or (III)</td></tr>
+        <tr><td>Cr(OH)₃</td><td>Trihidròxid de crom</td><td>Hidròxid de crom (III)</td></tr>
+        <tr><td>Mn(OH)₂</td><td>Dihidròxid de manganès</td><td>Hidròxid de manganès (II)</td></tr>
+        <tr><td>Ni(OH)₂</td><td>Dihidròxid de níquel</td><td>Hidròxid de níquel (II)</td></tr>
+        <tr><td>Co(OH)₂</td><td>Dihidròxid de cobalt</td><td>Hidròxid de cobalt (II)</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>💡 Trucs per recordar</h2>
+      <ul>
+        <li><strong>València = nombre de OH:</strong> Si el metall té valència +2, hi ha 2 grups OH. Sempre!</li>
+        <li><strong>Stock vs Sistemàtica:</strong> A Stock diem la valència en romans. A Sistemàtica posem el prefix (di-, tri-...)</li>
+        <li><strong>Metalls amb 1 sola valència</strong> (Na, K, Ca, Al...): el nom és igual a les dues nomenclatures (sense romans a Stock).</li>
+        <li><strong>Metalls amb 2 valències</strong> (Fe, Cu, Sn, Pb...): cal especificar a Stock amb (II) o (III), i a Sistemàtica amb di- o tri-.</li>
+      </ul>
+    </div>
+
+    <button class="btn-play-hydroxides" onclick="startGame('hydroxides')">
+      🎮 Jugar — Practica els Hidroxids!
+    </button>
+    <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
+  </div>
 </div>
 
 <script>
@@ -1123,6 +1351,53 @@ const SALT_TIPS = {
   'BaCl2': { rule: 'Clorur (Cl -1) + Bari (Ba +2)', trick: 'El 2 del Bari baixa al Clor.' }
 };
 
+// Hidroxids
+const HYDROXIDES = [
+  { formula: 'NaOH', sysName: 'hidròxid de sodi', stockName: 'hidròxid de sodi' },
+  { formula: 'KOH', sysName: 'hidròxid de potassi', stockName: 'hidròxid de potassi' },
+  { formula: 'LiOH', sysName: 'hidròxid de liti', stockName: 'hidròxid de liti' },
+  { formula: 'Ca(OH)2', sysName: 'dihidròxid de calci', stockName: 'hidròxid de calci' },
+  { formula: 'Mg(OH)2', sysName: 'dihidròxid de magnesi', stockName: 'hidròxid de magnesi' },
+  { formula: 'Ba(OH)2', sysName: 'dihidròxid de bari', stockName: 'hidròxid de bari' },
+  { formula: 'Al(OH)3', sysName: "trihidròxid d'alumini", stockName: "hidròxid d'alumini" },
+  { formula: 'Fe(OH)2', sysName: 'dihidròxid de ferro', stockName: 'hidròxid de ferro (II)' },
+  { formula: 'Fe(OH)3', sysName: 'trihidròxid de ferro', stockName: 'hidròxid de ferro (III)' },
+  { formula: 'Cu(OH)2', sysName: 'dihidròxid de coure', stockName: 'hidròxid de coure (II)' },
+  { formula: 'Zn(OH)2', sysName: 'dihidròxid de zinc', stockName: 'hidròxid de zinc' },
+  { formula: 'Pb(OH)2', sysName: 'dihidròxid de plom', stockName: 'hidròxid de plom (II)' },
+  { formula: 'AgOH', sysName: 'hidròxid de plata', stockName: 'hidròxid de plata' },
+  { formula: 'Sn(OH)2', sysName: "dihidròxid d'estany", stockName: "hidròxid d'estany (II)" },
+  { formula: 'Sn(OH)4', sysName: "tetrahidròxid d'estany", stockName: "hidròxid d'estany (IV)" },
+  { formula: 'Au(OH)3', sysName: "trihidròxid d'or", stockName: "hidròxid d'or (III)" },
+  { formula: 'Cr(OH)3', sysName: 'trihidròxid de crom', stockName: 'hidròxid de crom (III)' },
+  { formula: 'Mn(OH)2', sysName: 'dihidròxid de manganès', stockName: 'hidròxid de manganès (II)' },
+  { formula: 'Ni(OH)2', sysName: 'dihidròxid de níquel', stockName: 'hidròxid de níquel (II)' },
+  { formula: 'Co(OH)2', sysName: 'dihidròxid de cobalt', stockName: 'hidròxid de cobalt (II)' }
+];
+
+const HYDROXIDE_TIPS = {
+  'NaOH':    { rule: 'Na té valència +1 → 1 sol grup OH → NaOH. Sist: hidròxid de sodi. Stock: hidròxid de sodi (sense romans, ja que Na només té 1 valència).', trick: '🎯 Na +1 = 1 OH. NaOH = sosa càustica! El producte de neteja per excel·lència.' },
+  'KOH':     { rule: 'K té valència +1 → 1 sol OH → KOH. Nomenclatura igual a les dues: hidròxid de potassi.', trick: '🎯 K +1 = 1 OH. KOH = potassa càustica. Com NaOH però amb K.' },
+  'LiOH':    { rule: 'Li té valència +1 → LiOH. Sist = Stock: hidròxid de liti.', trick: '🎯 Li +1 = 1 OH. Tots els alcalins (Li, Na, K) fan MOH.' },
+  'Ca(OH)2': { rule: 'Ca té valència +2 → 2 grups OH → Ca(OH)₂. Sist: dihidròxid de calci. Stock: hidròxid de calci.', trick: '🎯 Ca +2 = 2 OH. Ca(OH)₂ = calç apagada! S\'usa en construcció.' },
+  'Mg(OH)2': { rule: 'Mg té valència +2 → Mg(OH)₂. Sist: dihidròxid de magnesi. Stock: hidròxid de magnesi.', trick: '🎯 Mg +2 = 2 OH. Mg(OH)₂ = llet de magnèsia (antiàcid estomacal!).' },
+  'Ba(OH)2': { rule: 'Ba té valència +2 → Ba(OH)₂. Sist: dihidròxid de bari. Stock: hidròxid de bari.', trick: '🎯 Ba +2 = 2 OH. Tots els alcalinoterris (Ca, Mg, Ba) fan M(OH)₂.' },
+  'Al(OH)3': { rule: 'Al té valència +3 → Al(OH)₃. Sist: trihidròxid d\'alumini. Stock: hidròxid d\'alumini (sense romans).', trick: '🎯 Al +3 = 3 OH. Al(OH)₃ = s\'usa com a antiàcid i en depuració d\'aigües.' },
+  'Fe(OH)2': { rule: 'Fe actua amb +2 → Fe(OH)₂. Sist: dihidròxid de ferro. Stock: hidròxid de ferro (II). Ferro té 2 valències!', trick: '🎯 Fe(II) = 2 OH → Fe(OH)₂. Color verd pàl·lid. Recorda: di- a Sist, (II) a Stock.' },
+  'Fe(OH)3': { rule: 'Fe actua amb +3 → Fe(OH)₃. Sist: trihidròxid de ferro. Stock: hidròxid de ferro (III).', trick: '🎯 Fe(III) = 3 OH → Fe(OH)₃. Color marró rovell. tri- a Sist, (III) a Stock.' },
+  'Cu(OH)2': { rule: 'Cu actua amb +2 → Cu(OH)₂. Sist: dihidròxid de coure. Stock: hidròxid de coure (II).', trick: '🎯 Cu(II) = 2 OH → Cu(OH)₂. Color blau cel! Precipitat blau molt visual.' },
+  'Zn(OH)2': { rule: 'Zn té valència +2 → Zn(OH)₂. Sist: dihidròxid de zinc. Stock: hidròxid de zinc.', trick: '🎯 Zn +2 = 2 OH. Zn(OH)₂ és anfòter: actua com a base I com a àcid!' },
+  'Pb(OH)2': { rule: 'Pb actua amb +2 → Pb(OH)₂. Sist: dihidròxid de plom. Stock: hidròxid de plom (II).', trick: '🎯 Pb(II) = 2 OH. El plom és tòxic! Recorda: (II) a Stock, di- a Sist.' },
+  'AgOH':    { rule: 'Ag té valència +1 → AgOH. Sist = Stock: hidròxid de plata (sense romans).', trick: '🎯 Ag +1 = 1 OH. Com els alcalins! AgOH és molt poc soluble.' },
+  'Sn(OH)2': { rule: 'Sn actua amb +2 → Sn(OH)₂. Sist: dihidròxid d\'estany. Stock: hidròxid d\'estany (II).', trick: '🎯 Sn(II) = 2 OH. L\'estany té 2 valències (+2 i +4), cal especificar.' },
+  'Sn(OH)4': { rule: 'Sn actua amb +4 → Sn(OH)₄. Sist: tetrahidròxid d\'estany. Stock: hidròxid d\'estany (IV).', trick: '🎯 Sn(IV) = 4 OH → tetra-! L\'únic amb prefix tetra- de la llista.' },
+  'Au(OH)3': { rule: 'Au actua amb +3 → Au(OH)₃. Sist: trihidròxid d\'or. Stock: hidròxid d\'or (III).', trick: '🎯 Au(III) = 3 OH. L\'or noble amb 3 grups OH!' },
+  'Cr(OH)3': { rule: 'Cr actua amb +3 → Cr(OH)₃. Sist: trihidròxid de crom. Stock: hidròxid de crom (III).', trick: '🎯 Cr(III) = 3 OH. Color verd! El crom dóna color (chromos = color en grec).' },
+  'Mn(OH)2': { rule: 'Mn actua amb +2 → Mn(OH)₂. Sist: dihidròxid de manganès. Stock: hidròxid de manganès (II).', trick: '🎯 Mn(II) = 2 OH. El manganès s\'usa en piles i acers.' },
+  'Ni(OH)2': { rule: 'Ni actua amb +2 → Ni(OH)₂. Sist: dihidròxid de níquel. Stock: hidròxid de níquel (II).', trick: '🎯 Ni(II) = 2 OH. S\'usa en bateries recarregables de NiMH!' },
+  'Co(OH)2': { rule: 'Co actua amb +2 → Co(OH)₂. Sist: dihidròxid de cobalt. Stock: hidròxid de cobalt (II).', trick: '🎯 Co(II) = 2 OH. Color rosa! El cobalt canvia de color segons l\'estat.' }
+};
+
 // ============================================================
 // CONSELLS I TRUCS MNEMOTÈCNICS
 // ============================================================
@@ -1277,6 +1552,15 @@ function allSaltCombos() {
   return all;
 }
 
+function allHydroxideCombos() {
+  const types = ['formula2name','name2formula','formula2write'];
+  const all   = [];
+  for (const type of types)
+    for (const h of HYDROXIDES)
+      all.push({ kind:'hydroxide', type, h, key: `hx_${type}_${h.formula}` });
+  return all;
+}
+
 // ---- Constructors de pregunta a partir d'un combo ----
 
 function buildElementQ(type, elem) {
@@ -1377,11 +1661,36 @@ function buildSaltQ(type, s) {
   return base;
 }
 
+function buildHydroxideQ(type, h) {
+  const base = { _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: h.formula };
+  const capSys = h.sysName.charAt(0).toUpperCase() + h.sysName.slice(1);
+  if (type === 'formula2name') {
+    const wrong3 = shuffle(HYDROXIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.sysName.charAt(0).toUpperCase() + x.sysName.slice(1));
+    return { ...base, label:'Fórmula → Nom (Hidròxid)',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${h.formula}</div></div><div class="q-text">Com s'anomena <strong>${h.formula}</strong> en nomenclatura sistemàtica?</div>`,
+      options:shuffle([capSys, ...wrong3]), correct:capSys, subject:h.formula };
+  }
+  if (type === 'name2formula') {
+    const wrong3 = shuffle(HYDROXIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:'Nom → Fórmula (Hidròxid)',
+      body:`<div class="q-text">Quina és la fórmula de <strong>${capSys}</strong>?</div>`,
+      options:shuffle([h.formula, ...wrong3]), correct:h.formula, subject:h.formula };
+  }
+  if (type === 'formula2write') {
+    return { ...base, label:'Fórmula → Escriure (Hidròxid)', inputType: 'text',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${h.formula}</div></div><div class="q-text">Escriu el nom de <strong>${h.formula}</strong> en les dues nomenclatures:</div>`,
+      correctSys: h.sysName, correctStock: h.stockName, subject:h.formula };
+  }
+  return base;
+}
+
 function getTip(q) {
   if (q._elemSym && ELEM_TIPS[q._elemSym])         return ELEM_TIPS[q._elemSym];
   if (q._hydrideFormula && HYDRIDE_TIPS[q._hydrideFormula]) return HYDRIDE_TIPS[q._hydrideFormula];
   if (q._saltFormula && SALT_TIPS[q._saltFormula]) return SALT_TIPS[q._saltFormula];
   if (q._saltFormula) return { rule: "A les sals binàries, el no-metall acaba en '-ur' i actua amb la seva valència negativa. El metall actua amb la positiva.", trick: "S'intercanvien les valències i se simplifica si és possible!" };
+  if (q._hydroxideFormula && HYDROXIDE_TIPS[q._hydroxideFormula]) return HYDROXIDE_TIPS[q._hydroxideFormula];
+  if (q._hydroxideFormula) return { rule: "Als hidròxids, el nombre de grups OH coincideix amb la valència del metall. M(OH)n.", trick: "Sist: prefix + hidròxid de metall. Stock: hidròxid de metall + (valència en romans)." };
   return null;
 }
 
@@ -1419,10 +1728,11 @@ function generateQuestions(mode) {
 
   // Construeix pool de combos per al mode
   let allCombos = [];
-  if      (mode === 'elements') allCombos = shuffle(allElementCombos());
-  else if (mode === 'hydrides') allCombos = shuffle(allHydrideCombos());
-  else if (mode === 'salts')    allCombos = shuffle(allSaltCombos());
-  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos()]);
+  if      (mode === 'elements')   allCombos = shuffle(allElementCombos());
+  else if (mode === 'hydrides')   allCombos = shuffle(allHydrideCombos());
+  else if (mode === 'salts')      allCombos = shuffle(allSaltCombos());
+  else if (mode === 'hydroxides') allCombos = shuffle(allHydroxideCombos());
+  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos(), ...allHydroxideCombos()]);
 
   // Separa fresques vs recents
   const fresh  = allCombos.filter(c => !recentSet.has(c.key));
@@ -1442,6 +1752,7 @@ function generateQuestions(mode) {
     let q;
     if (c.kind === 'element') q = buildElementQ(c.type, c.elem);
     else if (c.kind === 'hydride') q = buildHydrideQ(c.type, c.h);
+    else if (c.kind === 'hydroxide') q = buildHydroxideQ(c.type, c.h);
     else q = buildSaltQ(c.type, c.s);
     return { ...q, _key: c.key };
   });
@@ -1729,7 +2040,7 @@ function endGame() {
 }
 
 function updateHighscores() {
-  const modes = { elements:'Elements', hydrides:'Hidrurs', salts:'Sals', mixed:'Mixt' };
+  const modes = { elements:'Elements', hydrides:'Hidrurs', salts:'Sals', hydroxides:'Hidroxids', mixed:'Mixt' };
   const parts = [];
   for (const [k, label] of Object.entries(modes)) {
     const v = localStorage.getItem(`hs_${k}`);
