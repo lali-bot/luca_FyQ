@@ -1492,6 +1492,10 @@ const MAX_REPEAT   = Math.floor(TOTAL_Q * 0.2);   // 9 repeticions màxim (~20%)
 const RECENT_MAX   = 200;                          // historial màxim guardat
 const RECENT_KEY   = 'rq_v1';
 
+function getTimeForQuestion(q) {
+  return q.kind === 'hydroxide' ? 50 : TIME_PER_Q;
+}
+
 let gs = {};
 
 function shuffle(arr) {
@@ -1662,7 +1666,7 @@ function buildSaltQ(type, s) {
 }
 
 function buildHydroxideQ(type, h) {
-  const base = { _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: h.formula };
+  const base = { kind: 'hydroxide', _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: h.formula };
   const capSys = h.sysName.charAt(0).toUpperCase() + h.sysName.slice(1);
   if (type === 'formula2name') {
     const wrong3 = shuffle(HYDROXIDES.filter(x => x.formula !== h.formula)).slice(0,3).map(x => x.sysName.charAt(0).toUpperCase() + x.sysName.slice(1));
@@ -1824,7 +1828,8 @@ function showQuestion() {
   }
 
   clearInterval(gs.timerInterval);
-  gs.timeLeft = TIME_PER_Q;
+  gs.maxTime = getTimeForQuestion(q);
+  gs.timeLeft = gs.maxTime;
   updateTimer(gs.timeLeft);
   gs.timerInterval = setInterval(() => {
     gs.timeLeft--;
@@ -1839,7 +1844,7 @@ function showQuestion() {
 function updateTimer(t) {
   const circle = document.getElementById('timer-circle');
   const text   = document.getElementById('timer-text');
-  circle.style.strokeDashoffset = 138 * (1 - t / TIME_PER_Q);
+  circle.style.strokeDashoffset = 138 * (1 - t / gs.maxTime);
   circle.style.stroke = t <= 5 ? '#f44336' : t <= 8 ? '#ff9800' : '#ffd700';
   text.textContent = t;
   text.style.color = t <= 5 ? '#f44336' : '#e0e0e0';
