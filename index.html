@@ -105,6 +105,7 @@
   .card-hydrides  { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
   .card-salts     { background: linear-gradient(135deg, #1a1a2e, #2e1a2e); }
   .card-hydroxides{ background: linear-gradient(135deg, #1a1a2e, #1a3a2e); }
+  .card-oxoacids  { background: linear-gradient(135deg, #1a1a2e, #2a1a1e); }
   .card-mixed     { background: linear-gradient(135deg, #1a1a2e, #1b1b3a); }
   .card-table     { background: linear-gradient(135deg, #1a1a2e, #0d1b2a); }
 
@@ -867,6 +868,42 @@
     text-align: center;
   }
   .btn-play-hydroxides:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(76,175,80,0.3); }
+
+  .btn-play-oxoacids {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+    color: #0d0d1a; border: none;
+    padding: 1rem; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-play-oxoacids:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255,152,0,0.3); }
+
+  .btn-play-hydrides {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #5b9bd5, #7ba7d1);
+    color: #0d0d1a; border: none;
+    padding: 1rem; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-play-hydrides:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(91,155,213,0.3); }
+
+  .btn-play-salts {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #f1d33d, #f4d955);
+    color: #0d0d1a; border: none;
+    padding: 1rem; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-play-salts:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(241,211,61,0.3); }
 </style>
 </head>
 <body>
@@ -881,20 +918,25 @@
       <div class="title">Elements</div>
       <div class="desc">Noms, símbols i números atòmics</div>
     </div>
-    <div class="menu-card card-hydrides" onclick="startGame('hydrides')">
+    <div class="menu-card card-hydrides" onclick="showScreen('screen-hydrides-theory')">
       <div class="icon">🧪</div>
       <div class="title">Hidrurs</div>
-      <div class="desc">Fórmules i nomenclatura d'hidrurs</div>
+      <div class="desc">Teoria i joc d'hidrurs</div>
     </div>
-    <div class="menu-card card-salts" onclick="startGame('salts')">
+    <div class="menu-card card-salts" onclick="showScreen('screen-salts-theory')">
       <div class="icon">🧂</div>
       <div class="title">Sals Binàries</div>
-      <div class="desc">Fórmules i nomenclatura de sals</div>
+      <div class="desc">Teoria i joc de sals binàries</div>
     </div>
     <div class="menu-card card-hydroxides" onclick="showScreen('screen-hydroxides-theory')">
       <div class="icon">🧫</div>
       <div class="title">Hidroxids</div>
       <div class="desc">Teoria i joc d'hidròxids</div>
+    </div>
+    <div class="menu-card card-oxoacids" onclick="showScreen('screen-oxoacids-theory')">
+      <div class="icon">⚗️</div>
+      <div class="title">Oxoàcids</div>
+      <div class="desc">Teoria i joc d'oxoàcids</div>
     </div>
     <div class="menu-card card-mixed" onclick="startGame('mixed')">
       <div class="icon">⚡</div>
@@ -1131,6 +1173,361 @@
 
     <button class="btn-play-hydroxides" onclick="startGame('hydroxides')">
       🎮 Jugar — Practica els Hidroxids!
+    </button>
+    <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
+  </div>
+</div>
+
+<div id="screen-oxoacids-theory" class="screen">
+  <div class="theory-container">
+    <div class="theory-header">
+      <button class="btn-back" onclick="goMenu()">← Menú</button>
+      <div class="theory-title">⚗️ Oxoàcids (Àcids Oxigenats)</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>📖 Què és un oxoàcid?</h2>
+      <p>Un <strong>oxoàcid</strong> (o <strong>àcid oxigenat</strong>) és un compost format per <strong>hidrogen (H)</strong> + <strong>no-metall</strong> + <strong>oxigen (O)</strong>.</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big">H<sub>x</sub>XO<sub>y</sub></div>
+        <div class="theory-formula-label">H = hidrogen · X = no-metall (N, S, Cl, P...) · O = oxigen</div>
+      </div>
+      <p>La nomenclatura dels oxoàcids depèn de la <strong>valència del no-metall</strong>. Utilitzem sufixos (-ós, -ic) i prefixos (hipo-, per-).</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>⚗️ Com es formen?</h2>
+      <p>Els oxoàcids es formen quan un <strong>òxid no-metàl·lic</strong> reacciona amb <strong>aigua</strong>:</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big" style="font-size:1.3rem">Òxid no-metàl·lic + H₂O → Oxoàcid</div>
+        <div class="theory-formula-label">Exemple: Cl₂O₇ + H₂O → 2 HClO₄ (àcid perclòric)</div>
+      </div>
+      <ul>
+        <li><strong>CO₂ + H₂O</strong> → H₂CO₃ (àcid carbònic) — Present a les begudes gasoses!</li>
+        <li><strong>SO₃ + H₂O</strong> → H₂SO₄ (àcid sulfúric) — El més important industrial!</li>
+        <li><strong>N₂O₅ + H₂O</strong> → HNO₃ (àcid nítric) — Ús en síntesi química.</li>
+        <li><strong>P₂O₅ + H₂O</strong> → H₃PO₄ (àcid fosfòric) — Ingredient en refrescos!</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🎬 Vídeo explicatiu</h2>
+      <p>Mira aquest vídeo per entendre millor els oxoàcids:</p>
+      <a href="https://www.youtube.com/watch?v=PNRihu8L1BE&t=2s" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:1rem;background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.25);border-radius:12px;padding:1rem 1.25rem;margin-top:0.75rem;text-decoration:none;transition:all 0.15s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(255,0,0,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,0,0,0.25)';this.style.transform='none'">
+        <div style="font-size:2.5rem;line-height:1;">▶️</div>
+        <div>
+          <div style="font-weight:700;color:#ff6b6b;font-size:1rem;margin-bottom:0.2rem;">Veure vídeo a YouTube</div>
+          <div style="font-size:0.8rem;color:var(--muted);">Explicació completa dels oxoàcids — nomenclatura i formació</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="theory-section">
+      <h2>📝 Nomenclatura dels Oxoàcids</h2>
+      <p>La nomenclatura depèn de la <strong>valencia del no-metall central</strong>. Per als no-metalls amb multiple valencies, utilitzem prefixos i sufixos:</p>
+      <ul>
+        <li><strong>Hipo-</strong> + nom + <strong>-ós</strong>: València més baixa (exemplo: HClO, hipoclorós)</li>
+        <li><strong>Nom + -ós</strong>: València intermèdia (exemple: HClO₂, clorós)</li>
+        <li><strong>Nom + -ic</strong>: València més alta (exemple: HClO₃, clòric)</li>
+        <li><strong>Per-</strong> + nom + <strong>-ic</strong>: València màxima (exemple: HClO₄, perclòric)</li>
+      </ul>
+      <p><strong>Observació:</strong> Per a no-metalls que només tenemos 2 formes (com S), no fem servir hipo- ni per-.</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>🔢 Sèrie de Clor (Model d'estudi)</h2>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Nomenclatura</th><th>Cl Valencia</th><th>Tipus</th></tr>
+        <tr><td>HClO</td><td>Àcid hipoclorós</td><td>+1</td><td>Hipo-</td></tr>
+        <tr><td>HClO₂</td><td>Àcid clorós</td><td>+3</td><td>-ós</td></tr>
+        <tr><td>HClO₃</td><td>Àcid clòric</td><td>+5</td><td>-ic</td></tr>
+        <tr><td>HClO₄</td><td>Àcid perclòric</td><td>+7</td><td>Per-</td></tr>
+      </table>
+      <p style="margin-top:1rem;font-size:0.9rem;color:var(--muted);">La sèrie de Clor és el model més complet: totes les quatre formes possibles!</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>🧪 Tots els oxoàcids per estudiar</h2>
+      <table class="theory-table" id="theory-oxoacids-table">
+        <tr><th>Fórmula</th><th>Nomenclatura</th><th>Element Central</th><th>Valencia</th></tr>
+        <tr><td>HClO</td><td>Àcid hipoclorós</td><td>Clor</td><td>+1</td></tr>
+        <tr><td>HClO₂</td><td>Àcid clorós</td><td>Clor</td><td>+3</td></tr>
+        <tr><td>HClO₃</td><td>Àcid clòric</td><td>Clor</td><td>+5</td></tr>
+        <tr><td>HClO₄</td><td>Àcid perclòric</td><td>Clor</td><td>+7</td></tr>
+        <tr><td>H₂SO₃</td><td>Àcid sulfurós</td><td>Sofre</td><td>+4</td></tr>
+        <tr><td>H₂SO₄</td><td>Àcid sulfúric</td><td>Sofre</td><td>+6</td></tr>
+        <tr><td>HNO₂</td><td>Àcid nitrós</td><td>Nitrogen</td><td>+3</td></tr>
+        <tr><td>HNO₃</td><td>Àcid nítric</td><td>Nitrogen</td><td>+5</td></tr>
+        <tr><td>H₂CO₃</td><td>Àcid carbònic</td><td>Carboni</td><td>+4</td></tr>
+        <tr><td>H₃PO₃</td><td>Àcid fosfurós</td><td>Fòsfor</td><td>+3</td></tr>
+        <tr><td>H₃PO₄</td><td>Àcid fosfòric</td><td>Fòsfor</td><td>+5</td></tr>
+        <tr><td>HMnO₄</td><td>Àcid permangànic</td><td>Manganès</td><td>+7</td></tr>
+        <tr><td>HBrO</td><td>Àcid hipobromós</td><td>Brom</td><td>+1</td></tr>
+        <tr><td>HBrO₃</td><td>Àcid bròmic</td><td>Brom</td><td>+5</td></tr>
+        <tr><td>H₂CrO₄</td><td>Àcid cromàtic</td><td>Crom</td><td>+6</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>💡 Trucs per recordar</h2>
+      <ul>
+        <li><strong>Sèrie de Clor:</strong> HClO, HClO₂, HClO₃, HClO₄ → Hipo-, -ós, -ic, Per-</li>
+        <li><strong>Sèrie de Nitrogen:</strong> HNO₂ (-ós), HNO₃ (-ic) → Només dues formes!</li>
+        <li><strong>Sèrie de Sofre:</strong> H₂SO₃ (-ós), H₂SO₄ (-ic) → Només dues formes!</li>
+        <li><strong>Carbonats:</strong> H₂CO₃ és inestable i es descompon a H₂O + CO₂ en solució.</li>
+        <li><strong>Fosfòrics:</strong> H₃PO₄ té 3 hidrógens àcids i s'utilitza en refrescos.</li>
+        <li><strong>Permanganats:</strong> HMnO₄ és violeta i molt oxidant!</li>
+      </ul>
+    </div>
+
+    <button class="btn-play-oxoacids" onclick="startGame('oxoacids')">
+      🎮 Jugar — Practica els Oxoàcids!
+    </button>
+    <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
+  </div>
+</div>
+
+<div id="screen-hydrides-theory" class="screen">
+  <div class="theory-container">
+    <div class="theory-header">
+      <button class="btn-back" onclick="goMenu()">← Menú</button>
+      <div class="theory-title">🧪 Hidrurs (Combinacions amb Hidrogen)</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>📖 Què és un hidrur?</h2>
+      <p>Un <strong>hidrur</strong> és un compost químic format per <strong>hidrogen (H)</strong> combinat amb un altre element (metal o no-metal).</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big">XH<sub>n</sub></div>
+        <div class="theory-formula-label">X = qualsevol element · H = hidrogen · n = nombre d'hidrógens</div>
+      </div>
+      <p>Els hidrurs es classifiquen en <strong>tres tipus</strong> segons el caràcter de l'element X:</p>
+      <ul>
+        <li><strong>Hidrurs metàl·lics:</strong> Metal + H → LiH, NaH, CaH₂</li>
+        <li><strong>Hidràcids:</strong> No-metall + H → HCl, HBr, H₂S (formation com a àcid en dissolució)</li>
+        <li><strong>Hidrurs no-metàl·lics especials:</strong> NH₃, PH₃, CH₄ (amb noms especials)</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>⚗️ Tres tipus de hidrurs</h2>
+
+      <h3>1️⃣ Hidrurs Metàl·lics</h3>
+      <p><strong>Metal + Hidrogen →</strong> Combinacions binàries binàries binàries binàries de metalls amb H</p>
+      <ul>
+        <li>Nomenclatura: "Hidrur de [element]" o "Sèrie metàl·lica"</li>
+        <li>Exemples: LiH (hidrur de liti), CaH₂ (hidrur de calci)</li>
+        <li>Propietats: Sòlids iònics, reaccionen amb aigua</li>
+      </ul>
+
+      <h3>2️⃣ Hidràcids (No-metalls amb comportament àcid)</h3>
+      <p><strong>No-metall + Hidrogen →</strong> Solubles en aigua, formen àcids</p>
+      <ul>
+        <li>Nomenclatura: "Àcid [no-metall]hídric"</li>
+        <li>Exemples: HCl (àcid clorhídric), H₂S (àcid sulfhídric)</li>
+        <li>Propietats: Gasos a temperatura ambient, solubles en H₂O</li>
+      </ul>
+
+      <h3>3️⃣ Hidrurs No-metàl·lics Especials</h3>
+      <p><strong>No-metalls especials + Hidrogen →</strong> Noms trivials comuns</p>
+      <ul>
+        <li>NH₃ = <strong>Amoníac</strong> (o trihidrur de nitrogen)</li>
+        <li>PH₃ = <strong>Fosfina</strong> (o trihidrur de fòsfor)</li>
+        <li>CH₄ = <strong>Metà</strong> (o tetrahidrur de carboni)</li>
+        <li>H₂O = <strong>Aigua</strong> (o òxid de dihidrogen)</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🎬 Vídeo explicatiu</h2>
+      <p>Mira aquest vídeo per entendre millor els hidrurs:</p>
+      <a href="https://www.youtube.com/watch?v=wkqoQjpxAUk" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:1rem;background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.25);border-radius:12px;padding:1rem 1.25rem;margin-top:0.75rem;text-decoration:none;transition:all 0.15s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(255,0,0,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,0,0,0.25)';this.style.transform='none'">
+        <div style="font-size:2.5rem;line-height:1;">▶️</div>
+        <div>
+          <div style="font-weight:700;color:#ff6b6b;font-size:1rem;margin-bottom:0.2rem;">Veure vídeo a YouTube</div>
+          <div style="font-size:0.8rem;color:var(--muted);">Explicació completa dels hidrurs — nomenclatura i tipus</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="theory-section">
+      <h2>💡 Trucs per recordar</h2>
+      <ul>
+        <li><strong>Metàl·lics:</strong> "Hidrur de [metall]" — format: MHₙ (n = valència del metall)</li>
+        <li><strong>Hidràcids:</strong> "Àcid [no-metall]hídric" — gas que actua com a àcid en H₂O</li>
+        <li><strong>Especials:</strong> NH₃ (amoníac), CH₄ (metà), H₂O (aigua) — noms trimals comuns!</li>
+        <li><strong>Fórmula d'hidrurs metàl·lics:</strong> La valència del metal = nombre d'H. Ca(+2) → CaH₂</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🧪 Tots els Hidrurs per Estudiar</h2>
+
+      <h3>1️⃣ Hidrurs Metàl·lics</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Nom</th></tr>
+        <tr><td>LiH</td><td>Hidrur de liti</td></tr>
+        <tr><td>NaH</td><td>Hidrur de sodi</td></tr>
+        <tr><td>KH</td><td>Hidrur de potassi</td></tr>
+        <tr><td>RbH</td><td>Hidrur de rubidi</td></tr>
+        <tr><td>CsH</td><td>Hidrur de cesi</td></tr>
+        <tr><td>BeH₂</td><td>Hidrur de beril·li</td></tr>
+        <tr><td>MgH₂</td><td>Hidrur de magnesi</td></tr>
+        <tr><td>CaH₂</td><td>Hidrur de calci</td></tr>
+        <tr><td>SrH₂</td><td>Hidrur d'estronci</td></tr>
+        <tr><td>BaH₂</td><td>Hidrur de bari</td></tr>
+        <tr><td>AlH₃</td><td>Hidrur d'alumini</td></tr>
+      </table>
+
+      <h3>2️⃣ Hidràcids (No-metalls + H)</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Nom Comú (Àcid)</th></tr>
+        <tr><td>HF</td><td>Fluorur d'hidrogen</td><td>Àcid fluorhídric</td></tr>
+        <tr><td>HCl</td><td>Clorur d'hidrogen</td><td>Àcid clorhídric</td></tr>
+        <tr><td>HBr</td><td>Bromur d'hidrogen</td><td>Àcid bromhídric</td></tr>
+        <tr><td>HI</td><td>Iodur d'hidrogen</td><td>Àcid iohídric</td></tr>
+        <tr><td>H₂S</td><td>Sulfur d'hidrogen</td><td>Àcid sulfhídric</td></tr>
+        <tr><td>H₂Se</td><td>Seleniür d'hidrogen</td><td>Àcid selenhídric</td></tr>
+        <tr><td>H₂Te</td><td>Tel·lurur d'hidrogen</td><td>Àcid tel·lurhídric</td></tr>
+      </table>
+
+      <h3>3️⃣ Hidrurs No-metàl·lics Especials</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Nom Comú</th></tr>
+        <tr><td>NH₃</td><td>Trihidrur de nitrogen</td><td>Amoníac</td></tr>
+        <tr><td>PH₃</td><td>Trihidrur de fòsfor</td><td>Fosfina</td></tr>
+        <tr><td>AsH₃</td><td>Trihidrur d'arsènic</td><td>Arsina</td></tr>
+        <tr><td>CH₄</td><td>Tetrahidrur de carboni</td><td>Metà</td></tr>
+        <tr><td>SiH₄</td><td>Tetrahidrur de silici</td><td>Silà</td></tr>
+        <tr><td>H₂O</td><td>Òxid de dihidrogen</td><td>Aigua</td></tr>
+        <tr><td>BH₃</td><td>Trihidrur de bor</td><td>Borà</td></tr>
+      </table>
+    </div>
+
+    <button class="btn-play-hydrides" onclick="startGame('hydrides')">
+      🎮 Jugar — Practica els Hidrurs!
+    </button>
+    <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
+  </div>
+</div>
+
+<div id="screen-salts-theory" class="screen">
+  <div class="theory-container">
+    <div class="theory-header">
+      <button class="btn-back" onclick="goMenu()">← Menú</button>
+      <div class="theory-title">🧂 Sals Binàries (Combinacions Metal + No-metall)</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>📖 Què és una sal binària?</h2>
+      <p>Una <strong>sal binària</strong> és un compost químic format per <strong>metall + no-metall</strong>. S'obtén generalment de la reacció entre un àcid i una base.</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big">M + X → MXₙ</div>
+        <div class="theory-formula-label">M = metall · X = no-metall · n = nombre d'àtoms del no-metall (segundo la valència)</div>
+      </div>
+      <p>La <strong>nomenclatura</strong> depèn de la <strong>valencia del metall</strong> i el <strong>no-metall</strong>.</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>⚗️ Com es formen les sals binàries?</h2>
+      <p>Les sals es formen de diverses maneres:</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big" style="font-size:1.2rem">Àcid + Base → Sal + Aigua</div>
+        <div class="theory-formula-label">Exemple: HCl + NaOH → NaCl + H₂O</div>
+      </div>
+      <ul>
+        <li><strong>Reacció d'àcid-base:</strong> L'ió negatiu de l'àcid + ió positiu de la base</li>
+        <li><strong>Metal + No-metall:</strong> Reacció directa entre els elements</li>
+        <li><strong>Òxid metàl·lic + Àcid:</strong> MgO + 2HCl → MgCl₂ + H₂O</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>📝 Nomenclatura de Sals Binàries</h2>
+      <p>El nom d'una sal binària està format per:</p>
+      <p><strong>[Nom del no-metall + -ur/-id] + de + [Nom del metall + (valencia en romans si necessari)]</strong></p>
+
+      <h3>Regles de nomenclatura:</h3>
+      <ul>
+        <li><strong>Fluorurs, Clorurs, Bromurs, Iodurs:</strong> El no-metall acaba en <strong>"-ur"</strong>
+          <ul>
+            <li>NaCl → Clorur de sodi</li>
+            <li>CaF₂ → Fluorur de calci (NO "difluorur" en nomenclatura Stock)</li>
+          </ul>
+        </li>
+        <li><strong>Sulfurs, Seleniurs, Telluurs:</strong> El no-metall acaba en <strong>"-ur"</strong>
+          <ul>
+            <li>Na₂S → Sulfur de sodi</li>
+            <li>Fe₂S₃ → Sulfur de ferro (III)</li>
+          </ul>
+        </li>
+        <li><strong>Nitrurs, Fosfurs, Carburs:</strong> El no-metall acaba en <strong>"-ur"</strong>
+          <ul>
+            <li>Mg₃N₂ → Nitrur de magnesi</li>
+            <li>AlP → Fosfur d'alumini</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>Diferència entre nomenclatures:</h3>
+      <ul>
+        <li><strong>Stock:</strong> Nom + (valencia en romans si té més d'una) → "Sulfur de ferro (II)" o "Sulfur de ferro (III)"</li>
+        <li><strong>Sistemàtica (IUPAC):</strong> Prefix + nom + -ur → "Disulfur de ferro", "Trisulfur de diferro"</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>🎬 Vídeo explicatiu</h2>
+      <p>Mira aquest vídeo per entendre millor les sals binàries:</p>
+      <a href="https://www.youtube.com/watch?v=PNRihu8L1BE" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:1rem;background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.25);border-radius:12px;padding:1rem 1.25rem;margin-top:0.75rem;text-decoration:none;transition:all 0.15s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(255,0,0,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,0,0,0.25)';this.style.transform='none'">
+        <div style="font-size:2.5rem;line-height:1;">▶️</div>
+        <div>
+          <div style="font-weight:700;color:#ff6b6b;font-size:1rem;margin-bottom:0.2rem;">Veure vídeo a YouTube</div>
+          <div style="font-size:0.8rem;color:var(--muted);">Explicació completa de les sals binàries — nomenclatura i formació</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="theory-section">
+      <h2>🧪 Totes les Sals Binàries per Estudiar</h2>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Stock</th><th>Sistemàtica</th></tr>
+        <tr><td>NaCl</td><td>Clorur de sodi</td><td>Clorur de sodi</td></tr>
+        <tr><td>CaF₂</td><td>Fluorur de calci</td><td>Difluorur de calci</td></tr>
+        <tr><td>KI</td><td>Iodur de potassi</td><td>Iodur de potassi</td></tr>
+        <tr><td>MgBr₂</td><td>Bromur de magnesi</td><td>Dibromur de magnesi</td></tr>
+        <tr><td>FeS</td><td>Sulfur de ferro (II)</td><td>Monosulfur de ferro</td></tr>
+        <tr><td>Fe₂S₃</td><td>Sulfur de ferro (III)</td><td>Trisulfur de diferro</td></tr>
+        <tr><td>CuCl₂</td><td>Clorur de coure (II)</td><td>Diclorur de coure</td></tr>
+        <tr><td>AgCl</td><td>Clorur de plata</td><td>Clorur de plata</td></tr>
+        <tr><td>AlCl₃</td><td>Clorur d'alumini</td><td>Triclorur d'alumini</td></tr>
+        <tr><td>ZnS</td><td>Sulfur de zinc</td><td>Sulfur de zinc</td></tr>
+        <tr><td>PbI₂</td><td>Iodur de plom (II)</td><td>Diiodur de plom</td></tr>
+        <tr><td>Na₂S</td><td>Sulfur de sodi</td><td>Monosulfur de disodi</td></tr>
+        <tr><td>KBr</td><td>Bromur de potassi</td><td>Bromur de potassi</td></tr>
+        <tr><td>LiCl</td><td>Clorur de liti</td><td>Clorur de liti</td></tr>
+        <tr><td>CaCl₂</td><td>Clorur de calci</td><td>Diclorur de calci</td></tr>
+        <tr><td>CaS</td><td>Sulfur de calci</td><td>Sulfur de calci</td></tr>
+        <tr><td>Al₂S₃</td><td>Sulfur d'alumini</td><td>Trisulfur de dialumini</td></tr>
+        <tr><td>CuI</td><td>Iodur de coure (I)</td><td>Iodur de coure</td></tr>
+        <tr><td>AuCl₃</td><td>Clorur d'or (III)</td><td>Triclorur d'or</td></tr>
+        <tr><td>BaCl₂</td><td>Clorur de bari</td><td>Diclorur de bari</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>💡 Trucs per recordar</h2>
+      <ul>
+        <li><strong>Fórmula:</strong> M actua amb la seva + valea i X amb la seva -valencia → intercanviar i simplificar!</li>
+        <li><strong>Nomenclatura Stock:</strong> "[No-metall]-ur de [metall]" (amb romans si necessari)</li>
+        <li><strong>Metalls amb 1 sola valencia:</strong> No posem romans (Na, K, Ca, Mg, Al...)</li>
+        <li><strong>Metalls amb múltiples valencies:</strong> Sempre posem romans a Stock (Fe II/III, Cu I/II, Sn II/IV...)</li>
+        <li><strong>Acolorits característics:</strong> FeS (negre), CuS (negre), PbS (negre), Fe₂S₃ (vermell)</li>
+      </ul>
+    </div>
+
+    <button class="btn-play-salts" onclick="startGame('salts')">
+      🎮 Jugar — Practica les Sals Binàries!
     </button>
     <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
   </div>
@@ -1375,6 +1772,24 @@ const HYDROXIDES = [
   { formula: 'Co(OH)2', sysName: 'dihidròxid de cobalt', stockName: 'hidròxid de cobalt (II)' }
 ];
 
+const OXOACIDS = [
+  { formula: 'HClO', sysName: 'àcid hipoclorós', stockName: 'àcid hipoclorós' },
+  { formula: 'HClO₂', sysName: 'àcid clorós', stockName: 'àcid clorós' },
+  { formula: 'HClO₃', sysName: 'àcid clòric', stockName: 'àcid clòric' },
+  { formula: 'HClO₄', sysName: 'àcid perclòric', stockName: 'àcid perclòric' },
+  { formula: 'H₂SO₃', sysName: 'àcid sulfurós', stockName: 'àcid sulfurós' },
+  { formula: 'H₂SO₄', sysName: 'àcid sulfúric', stockName: 'àcid sulfúric' },
+  { formula: 'HNO₂', sysName: 'àcid nitrós', stockName: 'àcid nitrós' },
+  { formula: 'HNO₃', sysName: 'àcid nítric', stockName: 'àcid nítric' },
+  { formula: 'H₂CO₃', sysName: 'àcid carbònic', stockName: 'àcid carbònic' },
+  { formula: 'H₃PO₃', sysName: 'àcid fosfurós', stockName: 'àcid fosfurós' },
+  { formula: 'H₃PO₄', sysName: 'àcid fosfòric', stockName: 'àcid fosfòric' },
+  { formula: 'HMnO₄', sysName: 'àcid permangànic', stockName: 'àcid permangànic' },
+  { formula: 'HBrO', sysName: 'àcid hipobromós', stockName: 'àcid hipobromós' },
+  { formula: 'HBrO₃', sysName: 'àcid bròmic', stockName: 'àcid bròmic' },
+  { formula: 'H₂CrO₄', sysName: 'àcid cromàtic', stockName: 'àcid cromàtic' }
+];
+
 const HYDROXIDE_TIPS = {
   'NaOH':    { rule: 'Na té valència +1 → 1 sol grup OH → NaOH. Sist: hidròxid de sodi. Stock: hidròxid de sodi (sense romans, ja que Na només té 1 valència).', trick: '🎯 Na +1 = 1 OH. NaOH = sosa càustica! El producte de neteja per excel·lència.' },
   'KOH':     { rule: 'K té valència +1 → 1 sol OH → KOH. Nomenclatura igual a les dues: hidròxid de potassi.', trick: '🎯 K +1 = 1 OH. KOH = potassa càustica. Com NaOH però amb K.' },
@@ -1396,6 +1811,24 @@ const HYDROXIDE_TIPS = {
   'Mn(OH)2': { rule: 'Mn actua amb +2 → Mn(OH)₂. Sist: dihidròxid de manganès. Stock: hidròxid de manganès (II).', trick: '🎯 Mn(II) = 2 OH. El manganès s\'usa en piles i acers.' },
   'Ni(OH)2': { rule: 'Ni actua amb +2 → Ni(OH)₂. Sist: dihidròxid de níquel. Stock: hidròxid de níquel (II).', trick: '🎯 Ni(II) = 2 OH. S\'usa en bateries recarregables de NiMH!' },
   'Co(OH)2': { rule: 'Co actua amb +2 → Co(OH)₂. Sist: dihidròxid de cobalt. Stock: hidròxid de cobalt (II).', trick: '🎯 Co(II) = 2 OH. Color rosa! El cobalt canvia de color segons l\'estat.' }
+};
+
+const OXOACID_TIPS = {
+  'HClO':    { rule: 'HClO: Cl té +1. Sist: àcid hipoclorós. Es forma: Cl₂O + H₂O → HClO.', trick: '🎯 Hipo- = +1! HClO és desinfectant (agua oxigenada amb clor).' },
+  'HClO₂':   { rule: 'HClO₂: Cl té +3. Sist: àcid clorós. Menys comú que HClO i HClO₃.', trick: '🎯 -ós = +3 al no-metall (clor en aquest cas). Només -ós, no hipo-!' },
+  'HClO₃':   { rule: 'HClO₃: Cl té +5. Sist: àcid clòric. Es forma: Cl₂O₅ + H₂O → HClO₃.', trick: '🎯 -ic = +5! HClO₃ es molt oxidant i s\'usa en explosius.' },
+  'HClO₄':   { rule: 'HClO₄: Cl té +7 (màxim). Sist: àcid perclòric. Es forma: Cl₂O₇ + H₂O → HClO₄.', trick: '🎯 Per- = +7 (màxima valència). HClO₄ és l\'àcid més fort!' },
+  'H₂SO₃':   { rule: 'H₂SO₃: S té +4. Sist: àcid sulfurós. Es forma: SO₂ + H₂O → H₂SO₃.', trick: '🎯 -ós = +4! H₂SO₃ és inestable i es descompon en H₂O + SO₂.' },
+  'H₂SO₄':   { rule: 'H₂SO₄: S té +6 (màxim). Sist: àcid sulfúric. Es forma: SO₃ + H₂O → H₂SO₄.', trick: '🎯 -ic = +6! H₂SO₄ és l\'àcid més important industrialment.' },
+  'HNO₂':    { rule: 'HNO₂: N té +3. Sist: àcid nitrós. Es forma: N₂O₃ + H₂O → HNO₂.', trick: '🎯 -ós = +3! HNO₂ és inestable (es descompon fàcilment).' },
+  'HNO₃':    { rule: 'HNO₃: N té +5 (màxim). Sist: àcid nítric. Es forma: N₂O₅ + H₂O → HNO₃.', trick: '🎯 -ic = +5! HNO₃ és molt oxidant i s\'usa en síntesi química.' },
+  'H₂CO₃':   { rule: 'H₂CO₃: C té +4. Sist: àcid carbònic. Es forma: CO₂ + H₂O → H₂CO₃.', trick: '🎯 L\'àcid de les begudes gasoses! H₂CO₃ es descompon a CO₂ + H₂O.' },
+  'H₃PO₃':   { rule: 'H₃PO₃: P té +3. Sist: àcid fosfurós. Alguns diuen que és H₂PO(OH) (acídic).', trick: '🎯 -ós = +3! S\'usa com a reactiu en química.' },
+  'H₃PO₄':   { rule: 'H₃PO₄: P té +5 (màxim). Sist: àcid fosfòric. Es forma: P₂O₅ + H₂O → H₃PO₄.', trick: '🎯 -ic = +5! H₃PO₄ s\'usa en refrescos (és l\'àcid del Coca-Cola!).' },
+  'HMnO₄':   { rule: 'HMnO₄: Mn té +7 (màxim). Sist: àcid permangànic. Es forma: Mn₂O₇ + H₂O → HMnO₄.', trick: '🎯 Per- + Mn = màxima valència! HMnO₄ és violat i oxidant puissant.' },
+  'HBrO':    { rule: 'HBrO: Br té +1. Sist: àcid hipobromós. Similar al HClO, menys reactiu.', trick: '🎯 Hipo- = +1! Com els halogens, Br también té la sèrie hipo/oxa/-oso/-ico/per.' },
+  'HBrO₃':   { rule: 'HBrO₃: Br té +5. Sist: àcid bròmic. Similar al HClO₃, més estable.', trick: '🎯 -ic = +5! La sèrie de Br és similar a la de Cl però menys reactiva.' },
+  'H₂CrO₄':  { rule: 'H₂CrO₄: Cr té +6. Sist: àcid cromàtic. Es forma: CrO₃ + H₂O → H₂CrO₄.', trick: '🎯 Color groc! H₂CrO₄ canvia a H₂Cr₂O₇ (vermell) en medi àcid.' }
 };
 
 // ============================================================
@@ -1493,7 +1926,7 @@ const RECENT_MAX   = 200;                          // historial màxim guardat
 const RECENT_KEY   = 'rq_v1';
 
 function getTimeForQuestion(q) {
-  return q.kind === 'hydroxide' ? 50 : TIME_PER_Q;
+  return (q.kind === 'hydroxide' || q.kind === 'oxoacid') ? 50 : TIME_PER_Q;
 }
 
 let gs = {};
@@ -1562,6 +1995,15 @@ function allHydroxideCombos() {
   for (const type of types)
     for (const h of HYDROXIDES)
       all.push({ kind:'hydroxide', type, h, key: `hx_${type}_${h.formula}` });
+  return all;
+}
+
+function allOxoacidCombos() {
+  const types = ['formula2name','name2formula','formula2write'];
+  const all   = [];
+  for (const type of types)
+    for (const ox of OXOACIDS)
+      all.push({ kind:'oxoacid', type, ox, key: `ox_${type}_${ox.formula}` });
   return all;
 }
 
@@ -1688,6 +2130,29 @@ function buildHydroxideQ(type, h) {
   return base;
 }
 
+function buildOxoacidQ(type, ox) {
+  const base = { kind: 'oxoacid', _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: null, _oxoacidFormula: ox.formula };
+  const capSys = ox.sysName.charAt(0).toUpperCase() + ox.sysName.slice(1);
+  if (type === 'formula2name') {
+    const wrong3 = shuffle(OXOACIDS.filter(x => x.formula !== ox.formula)).slice(0,3).map(x => x.sysName.charAt(0).toUpperCase() + x.sysName.slice(1));
+    return { ...base, label:'Fórmula → Nom (Oxoàcid)',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${ox.formula}</div></div><div class="q-text">Com s'anomena <strong>${ox.formula}</strong> en nomenclatura sistemàtica?</div>`,
+      options:shuffle([capSys, ...wrong3]), correct:capSys, subject:ox.formula };
+  }
+  if (type === 'name2formula') {
+    const wrong3 = shuffle(OXOACIDS.filter(x => x.formula !== ox.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:'Nom → Fórmula (Oxoàcid)',
+      body:`<div class="q-text">Quina és la fórmula de <strong>${capSys}</strong>?</div>`,
+      options:shuffle([ox.formula, ...wrong3]), correct:ox.formula, subject:ox.formula };
+  }
+  if (type === 'formula2write') {
+    return { ...base, label:'Fórmula → Escriure (Oxoàcid)', inputType: 'text',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${ox.formula}</div></div><div class="q-text">Escriu el nom de <strong>${ox.formula}</strong> en nomenclatura sistemàtica i Stock:</div>`,
+      correctSys: ox.sysName, correctStock: ox.stockName, subject:ox.formula };
+  }
+  return base;
+}
+
 function getTip(q) {
   if (q._elemSym && ELEM_TIPS[q._elemSym])         return ELEM_TIPS[q._elemSym];
   if (q._hydrideFormula && HYDRIDE_TIPS[q._hydrideFormula]) return HYDRIDE_TIPS[q._hydrideFormula];
@@ -1695,6 +2160,8 @@ function getTip(q) {
   if (q._saltFormula) return { rule: "A les sals binàries, el no-metall acaba en '-ur' i actua amb la seva valència negativa. El metall actua amb la positiva.", trick: "S'intercanvien les valències i se simplifica si és possible!" };
   if (q._hydroxideFormula && HYDROXIDE_TIPS[q._hydroxideFormula]) return HYDROXIDE_TIPS[q._hydroxideFormula];
   if (q._hydroxideFormula) return { rule: "Als hidròxids, el nombre de grups OH coincideix amb la valència del metall. M(OH)n.", trick: "Sist: prefix + hidròxid de metall. Stock: hidròxid de metall + (valència en romans)." };
+  if (q._oxoacidFormula && OXOACID_TIPS[q._oxoacidFormula]) return OXOACID_TIPS[q._oxoacidFormula];
+  if (q._oxoacidFormula) return { rule: "Els oxoàcids són àcids formats per H + no-metall + O. La nomenclatura depèn de la valència del no-metall (hipo-, -ós, -ic, per-).", trick: "Hipo- (més baixa), -ós, -ic, Per- (més alta). Exemple: HClO, HClO₂, HClO₃, HClO₄." };
   return null;
 }
 
@@ -1736,7 +2203,8 @@ function generateQuestions(mode) {
   else if (mode === 'hydrides')   allCombos = shuffle(allHydrideCombos());
   else if (mode === 'salts')      allCombos = shuffle(allSaltCombos());
   else if (mode === 'hydroxides') allCombos = shuffle(allHydroxideCombos());
-  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos(), ...allHydroxideCombos()]);
+  else if (mode === 'oxoacids')   allCombos = shuffle(allOxoacidCombos());
+  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos(), ...allHydroxideCombos(), ...allOxoacidCombos()]);
 
   // Separa fresques vs recents
   const fresh  = allCombos.filter(c => !recentSet.has(c.key));
@@ -1756,7 +2224,9 @@ function generateQuestions(mode) {
     let q;
     if (c.kind === 'element') q = buildElementQ(c.type, c.elem);
     else if (c.kind === 'hydride') q = buildHydrideQ(c.type, c.h);
+    else if (c.kind === 'salt') q = buildSaltQ(c.type, c.s);
     else if (c.kind === 'hydroxide') q = buildHydroxideQ(c.type, c.h);
+    else if (c.kind === 'oxoacid') q = buildOxoacidQ(c.type, c.ox);
     else q = buildSaltQ(c.type, c.s);
     return { ...q, _key: c.key };
   });
