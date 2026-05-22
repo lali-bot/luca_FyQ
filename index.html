@@ -104,6 +104,7 @@
   .card-elements  { background: linear-gradient(135deg, #1a1a2e, #16213e); }
   .card-hydrides  { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
   .card-salts     { background: linear-gradient(135deg, #1a1a2e, #2e1a2e); }
+  .card-oxides    { background: linear-gradient(135deg, #1a1a2e, #3a2a1a); }
   .card-hydroxides{ background: linear-gradient(135deg, #1a1a2e, #1a3a2e); }
   .card-oxoacids  { background: linear-gradient(135deg, #1a1a2e, #2a1a1e); }
   .card-mixed     { background: linear-gradient(135deg, #1a1a2e, #1b1b3a); }
@@ -857,6 +858,18 @@
   }
   .theory-table td:first-child { font-family: monospace; font-weight: 700; color: var(--gold); }
 
+  .btn-play-oxides {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #cc7744, #dd9955);
+    color: #0d0d1a; border: none;
+    padding: 1rem; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-play-oxides:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(204,119,68,0.3); }
+
   .btn-play-hydroxides {
     display: block; width: 100%;
     background: linear-gradient(135deg, #4caf50, #81c784);
@@ -911,7 +924,7 @@
 <!-- ============ MENÚ ============ -->
 <div id="screen-menu" class="screen active">
   <div class="logo">⚗️ ChemQuest</div>
-  <div class="logo-sub">Taula Periòdica · Hidrurs · Hidroxids</div>
+  <div class="logo-sub">Taula Periòdica · Hidrurs · Òxids · Hidroxids</div>
   <div class="menu-grid">
     <div class="menu-card card-elements" onclick="startGame('elements')">
       <div class="icon">🔬</div>
@@ -927,6 +940,11 @@
       <div class="icon">🧂</div>
       <div class="title">Sals Binàries</div>
       <div class="desc">Teoria i joc de sals binàries</div>
+    </div>
+    <div class="menu-card card-oxides" onclick="showScreen('screen-oxides-theory')">
+      <div class="icon">🔥</div>
+      <div class="title">Òxids</div>
+      <div class="desc">Fórmules i nomenclatura de òxids</div>
     </div>
     <div class="menu-card card-hydroxides" onclick="showScreen('screen-hydroxides-theory')">
       <div class="icon">🧫</div>
@@ -1060,6 +1078,188 @@
     <div class="hydride-tables" id="hydride-tables"></div>
   </div>
   <div class="element-popup" id="element-popup"></div>
+</div>
+
+<!-- ============ ÒXIDS — TEORIA ============ -->
+<div id="screen-oxides-theory" class="screen">
+  <div class="theory-container">
+    <div class="theory-header">
+      <button class="btn-back" onclick="goMenu()">← Menú</button>
+      <div class="theory-title">🔥 Òxids (Compostos amb Oxigen)</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>📖 Què és un òxid?</h2>
+      <p>Un <strong>òxid</strong> és un compost químic format per <strong>un element + oxigen</strong>. Els òxids són molt comuns a la natura.</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big">Element + O₂ → Òxid (E₂Oₙ o EOₘ)</div>
+        <div class="theory-formula-label">Depèn de les valències de l'element i l'oxigen (-2)</div>
+      </div>
+      <p>Hi ha dos tipus principals:</p>
+      <ul>
+        <li><strong>Òxids Metàl·lics (Òxids Bàsics):</strong> Metall + Oxigen → sòlids que formen bases</li>
+        <li><strong>Òxids No-metàl·lics (Anhídrids):</strong> No-metall + Oxigen → gasos o sòlids que formen àcids</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>⚗️ Com es formen els òxids?</h2>
+      <p>Els òxids es formen de diverses maneres:</p>
+      <div class="theory-formula-box">
+        <div class="theory-formula-big" style="font-size:1.2rem">Element + O₂ → Òxid</div>
+        <div class="theory-formula-label">Combustió o combinació directa</div>
+      </div>
+      <ul>
+        <li><strong>Combustió simple:</strong> 2Na + O₂ → Na₂O (sodi es crema)</li>
+        <li><strong>Combustió incompleta:</strong> 2C + O₂ → 2CO (monòxid de carboni)</li>
+        <li><strong>Combustió completa:</strong> C + O₂ → CO₂ (diòxid de carboni)</li>
+        <li><strong>Reacció d'òxids metàl·lics + aigua:</strong> Na₂O + H₂O → 2NaOH (forma base)</li>
+        <li><strong>Reacció d'òxids no-metàl·lics + aigua:</strong> SO₃ + H₂O → H₂SO₄ (forma àcid)</li>
+      </ul>
+    </div>
+
+    <div class="theory-section">
+      <h2>📝 Nomenclatura dels Òxids</h2>
+      <p>La nomenclatura dels òxids depèn del tipus:</p>
+
+      <h3>🔹 Òxids Metàl·lics (Bàsics)</h3>
+      <p><strong>Sistemàtica:</strong> (prefix) + òxid + de + nom element</p>
+      <ul>
+        <li>Li₂O → Moròxid de dilitani (Sist) / Òxid de liti (Stock)</li>
+        <li>CaO → Moròxid de calci (Sist) / Òxid de calci (Stock)</li>
+        <li>Al₂O₃ → Triòxid de dialumini (Sist) / Òxid d'alumini (Stock)</li>
+        <li>Fe₂O₃ → Triòxid de diferro (Sist) / Òxid de ferro (III) (Stock)</li>
+      </ul>
+
+      <h3>🔹 Òxids No-metàl·lics (Anhídrids)</h3>
+      <p><strong>Ambdós noms:</strong> Sistemàtica = Stock</p>
+      <ul>
+        <li>CO₂ → Diòxid de carboni</li>
+        <li>SiO₂ → Diòxid de silici</li>
+        <li>SO₂ → Diòxid de sofre</li>
+        <li>N₂O₅ → Pentòxid de dinitrogen</li>
+        <li>Cl₂O₇ → Heptòxid de diclor (màxim clor)</li>
+      </ul>
+
+      <h3>📊 Prefixos numèrics</h3>
+      <table class="theory-table" style="margin:1rem 0">
+        <tr><th>Número</th><th>Prefix</th><th>Número</th><th>Prefix</th></tr>
+        <tr><td>1</td><td>Mono-</td><td>5</td><td>Penta-</td></tr>
+        <tr><td>2</td><td>Di-</td><td>6</td><td>Hexa-</td></tr>
+        <tr><td>3</td><td>Tri-</td><td>7</td><td>Hepta-</td></tr>
+        <tr><td>4</td><td>Tetra-</td><td>8</td><td>Octa-</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>📺 Vídeo Explicatiu</h2>
+      <p>Mira aquest vídeo per entendre millor la formació i nomenclatura dels òxids:</p>
+      <div style="position: relative; width: 100%; padding-bottom: 56.25%; margin: 1rem 0; border-radius: 12px; overflow: hidden;">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/lBCHQugsl2E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h2>🧪 Sèries d'Òxids per a Elements Claus</h2>
+
+      <h3>Sèrie del Nitrogen (N)</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Força del N</th></tr>
+        <tr><td>N₂O</td><td>Monòxid de dinitrogen</td><td>+1</td></tr>
+        <tr><td>NO</td><td>Monòxid de nitrogen</td><td>+2</td></tr>
+        <tr><td>NO₂</td><td>Diòxid de nitrogen</td><td>+4</td></tr>
+        <tr><td>N₂O₅</td><td>Pentòxid de dinitrogen</td><td>+5 (màxim)</td></tr>
+      </table>
+
+      <h3>Sèrie del Clor (Cl)</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Força del Cl</th></tr>
+        <tr><td>Cl₂O</td><td>Monòxid de diclor</td><td>+1</td></tr>
+        <tr><td>Cl₂O₃</td><td>Triòxid de diclor</td><td>+3</td></tr>
+        <tr><td>Cl₂O₅</td><td>Pentòxid de diclor</td><td>+5</td></tr>
+        <tr><td>Cl₂O₇</td><td>Heptòxid de diclor</td><td>+7 (màxim)</td></tr>
+      </table>
+
+      <h3>Sèrie del Ferro (Fe)</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Sistemàtica</th><th>Stock</th><th>Color</th></tr>
+        <tr><td>FeO</td><td>Moròxid de ferro</td><td>Òxid de ferro (II)</td><td>Negre-verd</td></tr>
+        <tr><td>Fe₂O₃</td><td>Triòxid de diferro</td><td>Òxid de ferro (III)</td><td>Vermell-marrò</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>📚 Taula Completa d'Òxids</h2>
+
+      <h3>1️⃣ Òxids Metàl·lics (Bàsics) — 25 Compostos</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Nomenclatura Stock</th><th>Nomenclatura Sistemàtica</th></tr>
+        <tr><td>Li₂O</td><td>Òxid de liti</td><td>Moròxid de dilitani</td></tr>
+        <tr><td>Na₂O</td><td>Òxid de sodi</td><td>Moròxid de disodi</td></tr>
+        <tr><td>K₂O</td><td>Òxid de potassi</td><td>Moròxid de dipotassi</td></tr>
+        <tr><td>Rb₂O</td><td>Òxid de rubidi</td><td>Moròxid de dirubidi</td></tr>
+        <tr><td>CaO</td><td>Òxid de calci</td><td>Moròxid de calci</td></tr>
+        <tr><td>MgO</td><td>Òxid de magnesi</td><td>Moròxid de magnesi</td></tr>
+        <tr><td>BaO</td><td>Òxid de bari</td><td>Moròxid de bari</td></tr>
+        <tr><td>Al₂O₃</td><td>Òxid d'alumini</td><td>Triòxid de dialumini</td></tr>
+        <tr><td>Fe₂O₃</td><td>Òxid de ferro (III)</td><td>Triòxid de diferro</td></tr>
+        <tr><td>FeO</td><td>Òxid de ferro (II)</td><td>Moròxid de ferro</td></tr>
+        <tr><td>CuO</td><td>Òxid de coure (II)</td><td>Moròxid de coure</td></tr>
+        <tr><td>Cu₂O</td><td>Òxid de coure (I)</td><td>Moròxid de dicoure</td></tr>
+        <tr><td>ZnO</td><td>Òxid de zinc</td><td>Moròxid de zinc</td></tr>
+        <tr><td>PbO</td><td>Òxid de plom (II)</td><td>Moròxid de plom</td></tr>
+        <tr><td>PbO₂</td><td>Òxid de plom (IV)</td><td>Diòxid de plom</td></tr>
+        <tr><td>SnO</td><td>Òxid d'estany (II)</td><td>Moròxid d'estany</td></tr>
+        <tr><td>SnO₂</td><td>Òxid d'estany (IV)</td><td>Diòxid d'estany</td></tr>
+        <tr><td>Cr₂O₃</td><td>Òxid de crom (III)</td><td>Triòxid de dicrom</td></tr>
+        <tr><td>CrO₃</td><td>Òxid de crom (VI)</td><td>Triòxid de crom</td></tr>
+        <tr><td>MnO</td><td>Òxid de manganès (II)</td><td>Moròxid de manganès</td></tr>
+        <tr><td>MnO₂</td><td>Òxid de manganès (IV)</td><td>Diòxid de manganès</td></tr>
+        <tr><td>NiO</td><td>Òxid de níquel (II)</td><td>Moròxid de níquel</td></tr>
+        <tr><td>CoO</td><td>Òxid de cobalt (II)</td><td>Moròxid de cobalt</td></tr>
+        <tr><td>Ag₂O</td><td>Òxid de plata</td><td>Moròxid de diplata</td></tr>
+        <tr><td>TiO₂</td><td>Òxid de titani</td><td>Diòxid de titani</td></tr>
+      </table>
+
+      <h3>2️⃣ Òxids No-metàl·lics (Anhídrids) — 16 Compostos</h3>
+      <table class="theory-table">
+        <tr><th>Fórmula</th><th>Nomenclatura</th><th>Tipus</th></tr>
+        <tr><td>CO₂</td><td>Diòxid de carboni</td><td>Gas (aire, begudes gasoses)</td></tr>
+        <tr><td>CO</td><td>Monòxid de carboni</td><td>Gas tòxic</td></tr>
+        <tr><td>SiO₂</td><td>Diòxid de silici</td><td>Sòlid (sorra, vidre)</td></tr>
+        <tr><td>N₂O</td><td>Monòxid de dinitrogen</td><td>Gas del somriure</td></tr>
+        <tr><td>NO</td><td>Monòxid de nitrogen</td><td>Gas</td></tr>
+        <tr><td>NO₂</td><td>Diòxid de nitrogen</td><td>Gas marró (smog)</td></tr>
+        <tr><td>N₂O₅</td><td>Pentòxid de dinitrogen</td><td>Sòlid</td></tr>
+        <tr><td>SO₂</td><td>Diòxid de sofre</td><td>Gas sufocant</td></tr>
+        <tr><td>SO₃</td><td>Triòxid de sofre</td><td>Sòlid (forma H₂SO₄)</td></tr>
+        <tr><td>P₂O₅</td><td>Pentòxid de difòsfor</td><td>Sòlid desecant</td></tr>
+        <tr><td>P₂O₃</td><td>Triòxid de difòsfor</td><td>Sòlid</td></tr>
+        <tr><td>Cl₂O</td><td>Monòxid de diclor</td><td>Gas grogós</td></tr>
+        <tr><td>Cl₂O₇</td><td>Heptòxid de diclor</td><td>Líquid marró</td></tr>
+        <tr><td>B₂O₃</td><td>Triòxid de dibor</td><td>Sòlid (vidre de bor)</td></tr>
+        <tr><td>As₂O₃</td><td>Triòxid de diarsénic</td><td>Sòlid blanc tòxic</td></tr>
+        <tr><td>As₂O₅</td><td>Pentòxid de diarsénic</td><td>Sòlid tòxic</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h2>💡 Trucs per Recordar</h2>
+      <ul>
+        <li><strong>Òxids = Element + Oxigen:</strong> Sempre, sense excepcions!</li>
+        <li><strong>Oxigen sempre té -2:</strong> La resta de l'element compensa</li>
+        <li><strong>Metàl·lics sàn bàsics:</strong> Na₂O + H₂O → NaOH (base)</li>
+        <li><strong>No-metàl·lics són àcids:</strong> SO₃ + H₂O → H₂SO₄ (àcid)</li>
+        <li><strong>Prefix mono- es treu:</strong> CO (no "monoòxid"), NO (no "monoòxid")</li>
+        <li><strong>Grups d'òxids:</strong> Alcalins (M₂O), Alcalinoterris (MO), Transitions (vàries)</li>
+      </ul>
+    </div>
+  </div>
+
+  <button class="btn-play-oxides" onclick="startGame('oxides')">
+    🎮 Jugar — Practica els Òxids!
+  </button>
+  <button class="btn-secondary" onclick="goMenu()" style="width:100%;margin-top:0.5rem;">← Tornar al menú</button>
 </div>
 
 <!-- ============ HIDROXIDS — TEORIA ============ -->
@@ -1748,6 +1948,95 @@ const SALT_TIPS = {
   'BaCl2': { rule: 'Clorur (Cl -1) + Bari (Ba +2)', trick: 'El 2 del Bari baixa al Clor.' }
 };
 
+// Òxids
+const OXIDES = [
+  { formula: 'Li₂O', sysName: 'moròxid de dilitani', stockName: 'òxid de liti' },
+  { formula: 'Na₂O', sysName: 'moròxid de disodi', stockName: 'òxid de sodi' },
+  { formula: 'K₂O', sysName: 'moròxid de dipotassi', stockName: 'òxid de potassi' },
+  { formula: 'Rb₂O', sysName: 'moròxid de dirubidi', stockName: 'òxid de rubidi' },
+  { formula: 'CaO', sysName: 'moròxid de calci', stockName: 'òxid de calci' },
+  { formula: 'MgO', sysName: 'moròxid de magnesi', stockName: 'òxid de magnesi' },
+  { formula: 'BaO', sysName: 'moròxid de bari', stockName: 'òxid de bari' },
+  { formula: 'Al₂O₃', sysName: "triòxid de dialumini", stockName: "òxid d'alumini" },
+  { formula: 'Fe₂O₃', sysName: 'triòxid de diferro', stockName: 'òxid de ferro (III)' },
+  { formula: 'FeO', sysName: 'moròxid de ferro', stockName: 'òxid de ferro (II)' },
+  { formula: 'CuO', sysName: 'moròxid de coure', stockName: 'òxid de coure (II)' },
+  { formula: 'Cu₂O', sysName: 'moròxid de dicoure', stockName: 'òxid de coure (I)' },
+  { formula: 'ZnO', sysName: 'moròxid de zinc', stockName: 'òxid de zinc' },
+  { formula: 'PbO', sysName: 'moròxid de plom', stockName: 'òxid de plom (II)' },
+  { formula: 'PbO₂', sysName: 'diòxid de plom', stockName: 'òxid de plom (IV)' },
+  { formula: 'SnO', sysName: "moròxid d'estany", stockName: "òxid d'estany (II)" },
+  { formula: 'SnO₂', sysName: "diòxid d'estany", stockName: "òxid d'estany (IV)" },
+  { formula: 'Cr₂O₃', sysName: 'triòxid de dicrom', stockName: 'òxid de crom (III)' },
+  { formula: 'CrO₃', sysName: 'triòxid de crom', stockName: 'òxid de crom (VI)' },
+  { formula: 'MnO', sysName: 'moròxid de manganès', stockName: 'òxid de manganès (II)' },
+  { formula: 'MnO₂', sysName: 'diòxid de manganès', stockName: 'òxid de manganès (IV)' },
+  { formula: 'NiO', sysName: 'moròxid de níquel', stockName: 'òxid de níquel (II)' },
+  { formula: 'CoO', sysName: 'moròxid de cobalt', stockName: 'òxid de cobalt (II)' },
+  { formula: 'Ag₂O', sysName: 'moròxid de diplata', stockName: 'òxid de plata' },
+  { formula: 'TiO₂', sysName: 'diòxid de titani', stockName: 'òxid de titani' },
+  { formula: 'CO₂', sysName: 'diòxid de carboni', stockName: 'diòxid de carboni' },
+  { formula: 'CO', sysName: 'monòxid de carboni', stockName: 'monòxid de carboni' },
+  { formula: 'SiO₂', sysName: 'diòxid de silici', stockName: 'diòxid de silici' },
+  { formula: 'N₂O', sysName: 'monòxid de dinitrogen', stockName: 'monòxid de dinitrogen' },
+  { formula: 'NO', sysName: 'monòxid de nitrogen', stockName: 'monòxid de nitrogen' },
+  { formula: 'NO₂', sysName: 'diòxid de nitrogen', stockName: 'diòxid de nitrogen' },
+  { formula: 'N₂O₅', sysName: 'pentòxid de dinitrogen', stockName: 'pentòxid de dinitrogen' },
+  { formula: 'SO₂', sysName: 'diòxid de sofre', stockName: 'diòxid de sofre' },
+  { formula: 'SO₃', sysName: 'triòxid de sofre', stockName: 'triòxid de sofre' },
+  { formula: 'P₂O₅', sysName: 'pentòxid de difòsfor', stockName: 'pentòxid de difòsfor' },
+  { formula: 'P₂O₃', sysName: 'triòxid de difòsfor', stockName: 'triòxid de difòsfor' },
+  { formula: 'Cl₂O', sysName: 'monòxid de diclor', stockName: 'monòxid de diclor' },
+  { formula: 'Cl₂O₇', sysName: 'heptòxid de diclor', stockName: 'heptòxid de diclor' },
+  { formula: 'B₂O₃', sysName: 'triòxid de dibor', stockName: 'triòxid de dibor' },
+  { formula: 'As₂O₃', sysName: 'triòxid de diarsénic', stockName: 'triòxid de diarsénic' },
+  { formula: 'As₂O₅', sysName: 'pentòxid de diarsénic', stockName: 'pentòxid de diarsénic' }
+];
+
+const OXIDE_TIPS = {
+  'Li2O':   { rule: 'Liti (grup 1) té +1 × 2 = +2, Oxigen (grup 16) té -2 × 1. Sist: moròxid de dilitani. Stock: òxid de liti.', trick: '🎯 Liti +1 × 2 = Li₂O. Els alcalins: LiOH, Li₂O (estructura similar).' },
+  'Na2O':   { rule: 'Sodi (grup 1) +1 × 2, Oxigen -2 × 1 → Na₂O. Sist: moròxid de disodi.', trick: '🎯 Na +1 × 2 = Na₂O. Com Li₂O però amb Sodi. Na₂O + H₂O → 2 NaOH.' },
+  'K2O':    { rule: 'Potassi (grup 1) +1 × 2, Oxigen -2 × 1 → K₂O. Stock: òxid de potassi.', trick: '🎯 K +1 × 2 = K₂O. Sèrie alcalins: Li₂O → Na₂O → K₂O. Patró: M₂O.' },
+  'Rb2O':   { rule: 'Rubidi (grup 1) +1 × 2, Oxigen -2 × 1 → Rb₂O. Menys comú que Na₂O.', trick: '🎯 Rb +1 × 2 = Rb₂O. Rubidi continua la sèrie dels alcalins.' },
+  'CaO':    { rule: 'Calci (grup 2) té +2, Oxigen té -2. Valències iguals → CaO. Sist: moròxid de calci. Cal viva!', trick: '🎯 Ca +2 vs O -2 → CaO. La cal viva! CaO + H₂O → Ca(OH)₂.' },
+  'MgO':    { rule: 'Magnesi (grup 2) +2, Oxigen -2 → MgO. Sist = Stock: òxid de magnesi.', trick: '🎯 Mg +2 vs O -2 → MgO. Producte refractari. Estructura similar a CaO.' },
+  'BaO':    { rule: 'Bari (grup 2) +2, Oxigen -2 → BaO. Molt reactiu amb l\'aigua. Sist: moròxid de bari.', trick: '🎯 Ba +2 vs O -2 → BaO. Els alcalinoterris: MgO, CaO, BaO. Estructura MO.' },
+  'Al2O3':  { rule: 'Alumini (grup 13) +3 × 2, Oxigen -2 × 3 → Al₂O₃. Sist: triòxid de dialumini. Materia prima: bauxita.', trick: '🎯 Al +3 × 2 = Al₂O₃. Alúmina! S\'usa com a refractari i abrasiu.' },
+  'Fe2O3':  { rule: 'Ferro (grup 8) actua amb +3 × 2, Oxigen -2 × 3 → Fe₂O₃. Stock: òxid de ferro (III). Color vermell.', trick: '🎯 Fe(III) × 2 = Fe₂O₃. Òxid de ferro vermell (hematita). Sèrie Fe: FeO (II) vs Fe₂O₃ (III).' },
+  'FeO':    { rule: 'Ferro actua amb +2, Oxigen -2 → FeO. Stock: òxid de ferro (II). Color negre.', trick: '🎯 Fe(II) vs O -2 → FeO. Ferro té dues valències! FeO negre vs Fe₂O₃ vermell.' },
+  'CuO':    { rule: 'Coure (grup 11) actua amb +2, Oxigen -2 → CuO. Stock: òxid de coure (II). Color negre.', trick: '🎯 Cu(II) vs O -2 → CuO. Pols negra! Coure: Cu₂O (I) vs CuO (II).' },
+  'Cu2O':   { rule: 'Coure actua amb +1 × 2, Oxigen -2 → Cu₂O. Stock: òxid de coure (I). Color vermell.', trick: '🎯 Cu(I) × 2 = Cu₂O. Vermell! Coure: Cu₂O vermell vs CuO negra.' },
+  'ZnO':    { rule: 'Zinc (grup 12) +2, Oxigen -2 → ZnO. Sist = Stock: òxid de zinc. Blanc.', trick: '🎯 Zn +2 vs O -2 → ZnO. Blanc com la llet! S\'usa en cosmètics i medicina.' },
+  'PbO':    { rule: 'Plom (grup 14) actua amb +2, Oxigen -2 → PbO. Stock: òxid de plom (II). Color groc o vermell.', trick: '🎯 Pb(II) vs O -2 → PbO. Plom tòxic! PbO amarilla vs PbO₂ marró.' },
+  'PbO2':   { rule: 'Plom actua amb +4, Oxigen -2 × 2 → PbO₂. Stock: òxid de plom (IV). Marró.', trick: '🎯 Pb(IV) = PbO₂. Diòxid! Plom tòxic: PbO (II) vs PbO₂ (IV).' },
+  'SnO':    { rule: "Estany (grup 14) actua amb +2, Oxigen -2 → SnO. Stock: òxid d'estany (II).", trick: "🎯 Sn(II) vs O -2 → SnO. Estany: SnO (II) vs SnO₂ (IV)." },
+  'SnO2':   { rule: "Estany actua amb +4, Oxigen -2 × 2 → SnO₂. Stock: òxid d'estany (IV).", trick: "🎯 Sn(IV) = SnO₂. Diòxid! Dioxid de Sn: SnO vs SnO₂." },
+  'Cr2O3':  { rule: 'Crom (grup 6) actua amb +3 × 2, Oxigen -2 × 3 → Cr₂O₃. Stock: òxid de crom (III). Color verd.', trick: '🎯 Cr(III) × 2 = Cr₂O₃. Verd! Crom: Cr₂O₃ (III) vs CrO₃ (VI).' },
+  'CrO3':   { rule: 'Crom actua amb +6, Oxigen -2 × 3 → CrO₃. Stock: òxid de crom (VI). Color groc.', trick: '🎯 Cr(VI) = CrO₃. Groc! Molt oxidant. Crom màxim: CrO₃.' },
+  'MnO':    { rule: 'Manganès (grup 7) actua amb +2, Oxigen -2 → MnO. Stock: òxid de manganès (II). Verd pàl·lid.', trick: '🎯 Mn(II) vs O -2 → MnO. Manganès: MnO (II) vs MnO₂ (IV).' },
+  'MnO2':   { rule: 'Manganès actua amb +4, Oxigen -2 × 2 → MnO₂. Stock: òxid de manganès (IV). Marró-negre.', trick: '🎯 Mn(IV) = MnO₂. Diòxid! Marró. S\'usa en piles sàlies.' },
+  'NiO':    { rule: 'Níquel (grup 10) +2, Oxigen -2 → NiO. Stock: òxid de níquel (II). Color verd.', trick: '🎯 Ni(II) vs O -2 → NiO. Verd clar! Níquel: només NiO típicament.' },
+  'CoO':    { rule: 'Cobalt (grup 9) +2, Oxigen -2 → CoO. Stock: òxid de cobalt (II). Color rose-negre.', trick: '🎯 Co(II) vs O -2 → CoO. Rosa o negre segons la forma. Cobalt sensible als colors.' },
+  'Ag2O':   { rule: 'Plata (grup 11) +1 × 2, Oxigen -2 → Ag₂O. Stock: òxid de plata. Color marró.', trick: '🎯 Ag +1 × 2 = Ag₂O. Marró! Plata noble: Ag₂O poc comú.' },
+  'TiO2':   { rule: 'Titani (grup 4) +4, Oxigen -2 × 2 → TiO₂. Stock: òxid de titani. Blanc pur.', trick: '🎯 Ti(IV) = TiO₂. Blanc brillant! S\'usa com a pigment blanc i en pells.' },
+  'CO2':    { rule: 'Carboni (grup 14) +4, Oxigen -2 × 2 → CO₂. Gas! Es forma: C + O₂ → CO₂.', trick: '🎯 C +4 = CO₂. Gas inodor! Respirem CO₂. Sist = Stock ambdós.' },
+  'CO':     { rule: 'Carboni +2, Oxigen -2 → CO. Gas monòxid. Es forma: 2C + O₂ → 2CO.', trick: '🎯 C +2 = CO. Monòxid perillos! Gas incolore i tòxic.' },
+  'SiO2':   { rule: 'Silici (grup 14) +4, Oxigen -2 × 2 → SiO₂. Vidre! Arena.', trick: '🎯 Si +4 = SiO₂. Arenis, vidre, cuars. El segon òxid més abundant!' },
+  'N2O':    { rule: 'Nitrogen (grup 15) +1 × 2, Oxigen -2 × 1 → N₂O. Gas del somriure! Anestèsic.', trick: '🎯 N(I) × 2 = N₂O. Gas de somriure! Nitrogen: N₂O, NO, NO₂, N₂O₅.' },
+  'NO':     { rule: 'Nitrogen +2, Oxigen -2 → NO. Gas incolor. S\'oxida a NO₂.', trick: '🎯 N(II) = NO. Incolor! NO és tòxic. Sèrie N: N₂O, NO, NO₂, N₂O₅.' },
+  'NO2':    { rule: 'Nitrogen +4, Oxigen -2 × 2 → NO₂. Gas marró-vermell tòxic!', trick: '🎯 N(IV) = NO₂. Marró vermell! Smog. Nitrogen: NO → NO₂.' },
+  'N2O5':   { rule: 'Nitrogen +5 (màxim) × 2, Oxigen -2 × 5 → N₂O₅. Sòlid. Es forma: 2NO₂ + O₃ → N₂O₅.', trick: '🎯 N(V) × 2 = N₂O₅. Sòlid inestable! Màxima valència del nitrogen.' },
+  'SO2':    { rule: 'Sofre (grup 16) +4, Oxigen -2 × 2 → SO₂. Gas! Es forma: S + O₂ → SO₂.', trick: '🎯 S(IV) = SO₂. Gas sufocant! Sofre: SO₂ (IV) vs SO₃ (VI).' },
+  'SO3':    { rule: 'Sofre +6 (màxim), Oxigen -2 × 3 → SO₃. Forma H₂SO₄ amb H₂O. Molt reactiu!', trick: '🎯 S(VI) = SO₃. Màxima! SO₃ + H₂O → H₂SO₄ (àcid sulfúric).' },
+  'P2O5':   { rule: 'Fòsfor (grup 15) +5 (màxim) × 2, Oxigen -2 × 5 → P₂O₅. Higroscòpic! Absorbeix aigua.', trick: '🎯 P(V) × 2 = P₂O₅. Blanca secant! P₂O₅ + 3H₂O → 2H₃PO₄.' },
+  'P2O3':   { rule: 'Fòsfor +3 × 2, Oxigen -2 × 3 → P₂O₃. Menys comú que P₂O₅.', trick: '🎯 P(III) × 2 = P₂O₃. Fòsfor: P₂O₃ (III) vs P₂O₅ (V).' },
+  'Cl2O':   { rule: 'Clor (grup 17) +1 × 2, Oxigen -2 × 1 → Cl₂O. Gas grogós. Anhídrid hipoclorós.', trick: '🎯 Cl(I) × 2 = Cl₂O. Clor: Cl₂O (I), Cl₂O₇ (VII). Anhídrids àcids!' },
+  'Cl2O7':  { rule: 'Clor +7 (màxim) × 2, Oxigen -2 × 7 → Cl₂O₇. Anhídrid perclòric. Molt reactiu!', trick: '🎯 Cl(VII) × 2 = Cl₂O₇. Màxim clor! Cl₂O₇ + H₂O → 2HClO₄.' },
+  'B2O3':   { rule: 'Bor (grup 13) +3 × 2, Oxigen -2 × 3 → B₂O₃. Vidre de bor.', trick: '🎯 B(III) × 2 = B₂O₃. Bor inorgànic. S\'usa en vidre Pyrex!' },
+  'As2O3':  { rule: 'Arsènic (grup 15) +3 × 2, Oxigen -2 × 3 → As₂O₃. Tòxic! Pol blanca.', trick: '🎯 As(III) × 2 = As₂O₃. TÒXIC! Arsènic: As₂O₃ (III) vs As₂O₅ (V).' },
+  'As2O5':  { rule: 'Arsènic +5 × 2, Oxigen -2 × 5 → As₂O₅. Molt tòxic.', trick: '🎯 As(V) × 2 = As₂O₅. TÒXIC! Màxim: As₂O₅. Arsènic mortal!' }
+};
+
 // Hidroxids
 const HYDROXIDES = [
   { formula: 'NaOH', sysName: 'hidròxid de sodi', stockName: 'hidròxid de sodi' },
@@ -1926,7 +2215,7 @@ const RECENT_MAX   = 200;                          // historial màxim guardat
 const RECENT_KEY   = 'rq_v1';
 
 function getTimeForQuestion(q) {
-  return (q.kind === 'hydroxide' || q.kind === 'oxoacid') ? 50 : TIME_PER_Q;
+  return (q.kind === 'oxide' || q.kind === 'hydroxide' || q.kind === 'oxoacid') ? 50 : TIME_PER_Q;
 }
 
 let gs = {};
@@ -1986,6 +2275,15 @@ function allSaltCombos() {
   for (const type of types)
     for (const s of SALTS)
       all.push({ kind:'salt', type, s, key: `s_${type}_${s.formula}` });
+  return all;
+}
+
+function allOxideCombos() {
+  const types = ['formula2name','name2formula','formula2write'];
+  const all   = [];
+  for (const type of types)
+    for (const ox of OXIDES)
+      all.push({ kind:'oxide', type, ox, key: `oxide_${type}_${ox.formula}` });
   return all;
 }
 
@@ -2130,6 +2428,29 @@ function buildHydroxideQ(type, h) {
   return base;
 }
 
+function buildOxideQ(type, ox) {
+  const base = { kind: 'oxide', _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: null, _oxideFormula: ox.formula };
+  const capSys = ox.sysName.charAt(0).toUpperCase() + ox.sysName.slice(1);
+  if (type === 'formula2name') {
+    const wrong3 = shuffle(OXIDES.filter(x => x.formula !== ox.formula)).slice(0,3).map(x => x.sysName.charAt(0).toUpperCase() + x.sysName.slice(1));
+    return { ...base, label:'Fórmula → Nom (Òxid)',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${ox.formula}</div></div><div class="q-text">Com s'anomena <strong>${ox.formula}</strong> en nomenclatura sistemàtica?</div>`,
+      options:shuffle([capSys, ...wrong3]), correct:capSys, subject:ox.formula };
+  }
+  if (type === 'name2formula') {
+    const wrong3 = shuffle(OXIDES.filter(x => x.formula !== ox.formula)).slice(0,3).map(x => x.formula);
+    return { ...base, label:'Nom → Fórmula (Òxid)',
+      body:`<div class="q-text">Quina és la fórmula de <strong>${capSys}</strong>?</div>`,
+      options:shuffle([ox.formula, ...wrong3]), correct:ox.formula, subject:ox.formula };
+  }
+  if (type === 'formula2write') {
+    return { ...base, label:'Fórmula → Escriure (Òxid)', inputType: 'text',
+      body:`<div class="q-element-display"><div class="q-symbol" style="font-size:1.6rem;letter-spacing:-1px">${ox.formula}</div></div><div class="q-text">Escriu el nom de <strong>${ox.formula}</strong> en les dues nomenclatures:</div>`,
+      correctSys: ox.sysName, correctStock: ox.stockName, subject:ox.formula };
+  }
+  return base;
+}
+
 function buildOxoacidQ(type, ox) {
   const base = { kind: 'oxoacid', _elemSym: null, _hydrideFormula: null, _saltFormula: null, _hydroxideFormula: null, _oxoacidFormula: ox.formula };
   const capSys = ox.sysName.charAt(0).toUpperCase() + ox.sysName.slice(1);
@@ -2158,6 +2479,8 @@ function getTip(q) {
   if (q._hydrideFormula && HYDRIDE_TIPS[q._hydrideFormula]) return HYDRIDE_TIPS[q._hydrideFormula];
   if (q._saltFormula && SALT_TIPS[q._saltFormula]) return SALT_TIPS[q._saltFormula];
   if (q._saltFormula) return { rule: "A les sals binàries, el no-metall acaba en '-ur' i actua amb la seva valència negativa. El metall actua amb la positiva.", trick: "S'intercanvien les valències i se simplifica si és possible!" };
+  if (q._oxideFormula && OXIDE_TIPS[q._oxideFormula]) return OXIDE_TIPS[q._oxideFormula];
+  if (q._oxideFormula) return { rule: "Els òxids són compostos formats per element + oxigen. Els òxids metàl·lics són bases (sòlids), els no-metàl·lics són anhídrids àcids (gas/sòlid).", trick: "Sist: prefix + òxid de element. Stock: òxid de element + (valència en romans si varia)." };
   if (q._hydroxideFormula && HYDROXIDE_TIPS[q._hydroxideFormula]) return HYDROXIDE_TIPS[q._hydroxideFormula];
   if (q._hydroxideFormula) return { rule: "Als hidròxids, el nombre de grups OH coincideix amb la valència del metall. M(OH)n.", trick: "Sist: prefix + hidròxid de metall. Stock: hidròxid de metall + (valència en romans)." };
   if (q._oxoacidFormula && OXOACID_TIPS[q._oxoacidFormula]) return OXOACID_TIPS[q._oxoacidFormula];
@@ -2202,9 +2525,10 @@ function generateQuestions(mode) {
   if      (mode === 'elements')   allCombos = shuffle(allElementCombos());
   else if (mode === 'hydrides')   allCombos = shuffle(allHydrideCombos());
   else if (mode === 'salts')      allCombos = shuffle(allSaltCombos());
+  else if (mode === 'oxides')     allCombos = shuffle(allOxideCombos());
   else if (mode === 'hydroxides') allCombos = shuffle(allHydroxideCombos());
   else if (mode === 'oxoacids')   allCombos = shuffle(allOxoacidCombos());
-  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos(), ...allHydroxideCombos(), ...allOxoacidCombos()]);
+  else    allCombos = shuffle([...allElementCombos(), ...allHydrideCombos(), ...allSaltCombos(), ...allOxideCombos(), ...allHydroxideCombos(), ...allOxoacidCombos()]);
 
   // Separa fresques vs recents
   const fresh  = allCombos.filter(c => !recentSet.has(c.key));
@@ -2225,6 +2549,7 @@ function generateQuestions(mode) {
     if (c.kind === 'element') q = buildElementQ(c.type, c.elem);
     else if (c.kind === 'hydride') q = buildHydrideQ(c.type, c.h);
     else if (c.kind === 'salt') q = buildSaltQ(c.type, c.s);
+    else if (c.kind === 'oxide') q = buildOxideQ(c.type, c.ox);
     else if (c.kind === 'hydroxide') q = buildHydroxideQ(c.type, c.h);
     else if (c.kind === 'oxoacid') q = buildOxoacidQ(c.type, c.ox);
     else q = buildSaltQ(c.type, c.s);
