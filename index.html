@@ -398,36 +398,43 @@
   }
 
   .pt-cell {
-    aspect-ratio: 1;
+    aspect-ratio: 0.85;
     background: var(--surface);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     cursor: pointer;
     transition: all 0.15s;
-    border: 1px solid transparent;
-    min-width: 40px;
-    padding: 2px;
+    border: 2px solid transparent;
+    min-width: 44px;
+    padding: 3px 2px;
+    gap: 1px;
   }
   .pt-cell:hover { transform: scale(1.15); z-index: 10; border-color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
   .pt-cell .pt-num  { font-size: 0.55rem; color: rgba(255,255,255,0.6); align-self: flex-start; padding-left: 3px; }
   .pt-cell .pt-sym  { font-size: 1rem; font-weight: 800; line-height: 1; }
   .pt-cell .pt-name { font-size: 0.4rem; color: rgba(255,255,255,0.7); text-align: center; }
+  .pt-cell .pt-val  { font-size: 0.5rem; color: #fff; background: #d32f2f; font-weight: 800; text-align: center; line-height: 1.1; margin-top: 2px; padding: 1px 2px; border-radius: 3px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); width: 100%; word-break: break-word; }
   .pt-spacer { background: transparent; border: none; cursor: default; }
   .pt-spacer:hover { transform: none; box-shadow: none; border-color: transparent; }
 
-  .cat-alkali      { background: rgba(255,107,107,0.3); border-color: rgba(255,107,107,0.4); }
-  .cat-alkaline    { background: rgba(255,165,0,0.3);   border-color: rgba(255,165,0,0.4); }
-  .cat-transition  { background: rgba(91,155,213,0.3);  border-color: rgba(91,155,213,0.4); }
-  .cat-other-metal { background: rgba(112,193,179,0.3); border-color: rgba(112,193,179,0.4); }
-  .cat-metalloid   { background: rgba(199,125,255,0.3); border-color: rgba(199,125,255,0.4); }
-  .cat-nonmetal    { background: rgba(249,199,79,0.3);  border-color: rgba(249,199,79,0.4); }
-  .cat-halogen     { background: rgba(67,170,139,0.3);  border-color: rgba(67,170,139,0.4); }
-  .cat-noble       { background: rgba(67,97,238,0.3);   border-color: rgba(67,97,238,0.4); }
-  .cat-lanthanide  { background: rgba(247,37,133,0.25); border-color: rgba(247,37,133,0.4); }
-  .cat-actinide    { background: rgba(255,158,0,0.25);  border-color: rgba(255,158,0,0.4); }
+  /* COLORES MEJORADOS - más contraste entre metales y no metales */
+  .cat-alkali      { background: rgba(220,38,38,0.55);   border-color: rgba(220,38,38,0.9); }    /* ROJO intenso */
+  .cat-alkaline    { background: rgba(234,88,12,0.55);   border-color: rgba(234,88,12,0.9); }    /* NARANJA oscuro */
+  .cat-transition  { background: rgba(37,99,235,0.55);   border-color: rgba(37,99,235,0.9); }    /* AZUL fuerte */
+  .cat-other-metal { background: rgba(20,184,166,0.55);  border-color: rgba(20,184,166,0.9); }   /* TURQUESA */
+  .cat-metalloid   { background: rgba(168,85,247,0.55);  border-color: rgba(168,85,247,0.9); }   /* VIOLETA */
+  .cat-nonmetal    { background: rgba(250,204,21,0.6);   border-color: rgba(250,204,21,0.95); color:#1a1a2e; }  /* AMARILLO brillante */
+  .cat-halogen     { background: rgba(34,197,94,0.55);   border-color: rgba(34,197,94,0.9); }    /* VERDE */
+  .cat-noble       { background: rgba(99,102,241,0.55);  border-color: rgba(99,102,241,0.9); }   /* INDIGO */
+  .cat-lanthanide  { background: rgba(236,72,153,0.5);   border-color: rgba(236,72,153,0.9); }   /* ROSA */
+  .cat-actinide    { background: rgba(245,158,11,0.5);   border-color: rgba(245,158,11,0.9); }   /* ÁMBAR */
+
+  /* No-metales con texto oscuro para mejor lectura sobre amarillo */
+  .cat-nonmetal .pt-sym, .cat-nonmetal .pt-name, .cat-nonmetal .pt-num { color: #1a1a2e !important; }
+  .cat-nonmetal .pt-val { background: #b91c1c; color: #fff; }
 
   .element-popup {
     position: fixed;
@@ -475,6 +482,78 @@
   }
   .hydrides-ref h2 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent); }
 
+  /* ==== VALÈNCIES PER GRUPS ==== */
+  .valencies-by-group {
+    margin-top: 2rem;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid rgba(255,215,0,0.3);
+  }
+  .valencies-by-group h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+    color: #ffd700;
+    text-align: center;
+  }
+  .valencies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .val-group {
+    background: rgba(255,255,255,0.04);
+    border-left: 5px solid #888;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.2s;
+  }
+  .val-group:hover { transform: translateY(-2px); background: rgba(255,255,255,0.07); }
+  .val-group-title { font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+  .val-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffd700;
+    background: rgba(255,215,0,0.1);
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    text-align: center;
+    margin: 0.5rem 0;
+    letter-spacing: 0.5px;
+  }
+  .val-elements { font-size: 0.8rem; color: #ccc; text-align: center; font-family: 'Courier New', monospace; font-weight: 600; }
+  .val-extra { font-size: 0.7rem; color: #ff9800; text-align: center; margin-top: 0.4rem; font-weight: 600; }
+
+  .val-trans-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+    color: #ddd;
+  }
+  .val-trans-list span { padding: 2px 0; }
+  .val-trans-list b { color: #ffd700; }
+
+  /* Bordes coloreados por grupo */
+  .val-group-1 { border-left-color: #dc2626; }  /* rojo - alcalins */
+  .val-group-2 { border-left-color: #ea580c; }  /* naranja - alcalinoterris */
+  .val-group-13 { border-left-color: #14b8a6; } /* turquesa */
+  .val-group-14 { border-left-color: #a855f7; } /* violeta */
+  .val-group-15 { border-left-color: #facc15; } /* amarillo */
+  .val-group-16 { border-left-color: #facc15; } /* amarillo */
+  .val-group-17 { border-left-color: #22c55e; } /* verde - halógens */
+  .val-group-18 { border-left-color: #6366f1; } /* indigo - nobles */
+  .val-group-transition { border-left-color: #2563eb; grid-column: span 2; }
+  .val-group-h { border-left-color: #f72585; grid-column: span 2; }
+
+  @media (max-width: 600px) {
+    .val-group-transition, .val-group-h { grid-column: span 1; }
+    .val-trans-list { grid-template-columns: 1fr; }
+  }
+
   .hydride-tables { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
   .hydride-table-section h3 {
     font-size: 0.8rem; text-transform: uppercase;
@@ -496,6 +575,7 @@
     .pt-cell .pt-sym   { font-size: 0.6rem; }
     .pt-cell .pt-name  { display: none; }
     .pt-cell .pt-num   { font-size: 0.4rem; }
+    .pt-cell .pt-val   { font-size: 0.35rem; }
   }
 
   @keyframes shake {
@@ -1260,6 +1340,91 @@
   </div>
   <div class="pt-legend" id="pt-legend"></div>
   <div class="pt-grid" id="pt-grid"></div>
+
+  <!-- ⚛️ Sección de Valencias por Grupos -->
+  <div class="valencies-by-group">
+    <h2>⚛️ Valències per Grups de la Taula Periòdica</h2>
+    <div class="valencies-grid">
+
+      <div class="val-group val-group-1">
+        <div class="val-group-title">Grup 1 — Alcalins</div>
+        <div class="val-value">+1</div>
+        <div class="val-elements">Li · Na · K · Rb · Cs</div>
+      </div>
+
+      <div class="val-group val-group-2">
+        <div class="val-group-title">Grup 2 — Alcalinoterris</div>
+        <div class="val-value">+2</div>
+        <div class="val-elements">Be · Mg · Ca · Sr · Ba</div>
+      </div>
+
+      <div class="val-group val-group-13">
+        <div class="val-group-title">Grup 13</div>
+        <div class="val-value">+3</div>
+        <div class="val-elements">B · Al · Ga</div>
+      </div>
+
+      <div class="val-group val-group-14">
+        <div class="val-group-title">Grup 14</div>
+        <div class="val-value">+4 / -4</div>
+        <div class="val-elements">C · Si · Ge</div>
+        <div class="val-extra">Sn, Pb: +2, +4</div>
+      </div>
+
+      <div class="val-group val-group-15">
+        <div class="val-group-title">Grup 15</div>
+        <div class="val-value">-3 / +3, +5</div>
+        <div class="val-elements">N · P · As · Sb</div>
+      </div>
+
+      <div class="val-group val-group-16">
+        <div class="val-group-title">Grup 16 — Calcògens</div>
+        <div class="val-value">-2 / +4, +6</div>
+        <div class="val-elements">O · S · Se · Te</div>
+        <div class="val-extra">⚠️ O: SEMPRE -2</div>
+      </div>
+
+      <div class="val-group val-group-17">
+        <div class="val-group-title">Grup 17 — Halògens</div>
+        <div class="val-value">-1 / +1, +3, +5, +7</div>
+        <div class="val-elements">F · Cl · Br · I</div>
+        <div class="val-extra">⚠️ F: SEMPRE -1</div>
+      </div>
+
+      <div class="val-group val-group-18">
+        <div class="val-group-title">Grup 18 — Gasos Nobles</div>
+        <div class="val-value">0</div>
+        <div class="val-elements">He · Ne · Ar · Kr · Xe</div>
+        <div class="val-extra">No es combinen</div>
+      </div>
+
+      <div class="val-group val-group-transition">
+        <div class="val-group-title">⚙️ Metalls de Transició</div>
+        <div class="val-trans-list">
+          <span><b>Fe:</b> +2, +3</span>
+          <span><b>Cu:</b> +1, +2</span>
+          <span><b>Zn:</b> +2</span>
+          <span><b>Ag:</b> +1</span>
+          <span><b>Au:</b> +1, +3</span>
+          <span><b>Hg:</b> +1, +2</span>
+          <span><b>Cr:</b> +2, +3, +6</span>
+          <span><b>Mn:</b> +2, +4, +6, +7</span>
+          <span><b>Ni:</b> +2, +3</span>
+          <span><b>Co:</b> +2, +3</span>
+          <span><b>Ti:</b> +3, +4</span>
+          <span><b>Pt:</b> +2, +4</span>
+        </div>
+      </div>
+
+      <div class="val-group val-group-h">
+        <div class="val-group-title">⚡ Hidrogen (cas especial)</div>
+        <div class="val-value">+1 amb no-metalls · -1 amb metalls</div>
+        <div class="val-elements">HCl, H₂O, NH₃ (+1) — NaH, CaH₂ (-1)</div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="hydrides-ref">
     <h2>📚 Referència d'Hidrurs</h2>
     <div class="hydride-tables" id="hydride-tables"></div>
@@ -1932,15 +2097,15 @@
 // ============================================================
 
 const CATEGORIES = {
-  'alkali':      { label: 'Metal alcalí',          color: '#ff6b6b' },
-  'alkaline':    { label: 'Metal alcalinoterri',    color: '#ffa500' },
-  'transition':  { label: 'Metal de transició',     color: '#5b9bd5' },
-  'other-metal': { label: 'Altres metalls',          color: '#70c1b3' },
-  'metalloid':   { label: 'Metal·loide',             color: '#c77dff' },
-  'nonmetal':    { label: 'No metall',               color: '#f9c74f' },
-  'halogen':     { label: 'Halogen',                 color: '#43aa8b' },
-  'noble':       { label: 'Gas noble',               color: '#4361ee' },
-  'lanthanide':  { label: 'Lantànid',                color: '#f72585' },
+  'alkali':      { label: '🔴 Metall alcalí',          color: '#dc2626' },
+  'alkaline':    { label: '🟠 Metall alcalinoterri',    color: '#ea580c' },
+  'transition':  { label: '🔵 Metall de transició',     color: '#2563eb' },
+  'other-metal': { label: '🟢 Altres metalls',          color: '#14b8a6' },
+  'metalloid':   { label: '🟣 Metal·loide',             color: '#a855f7' },
+  'nonmetal':    { label: '🟡 No metall',               color: '#facc15' },
+  'halogen':     { label: '🟢 Halogen',                 color: '#22c55e' },
+  'noble':       { label: '💙 Gas noble',               color: '#6366f1' },
+  'lanthanide':  { label: '💗 Lantànid',                color: '#ec4899' },
   'actinide':    { label: 'Actínid',                 color: '#ff9e00' },
 };
 
@@ -2288,52 +2453,143 @@ const OXOACIDS = [
 // VALÈNCIES DELS ELEMENTS (per al joc de valències)
 // ============================================================
 // Format: { symbol, name, group, valencies (array de strings) }
+// LLISTA COMPLETA DE TOTS ELS ELEMENTS DE LA TAULA PERIÒDICA
 const VALENCIES = [
-  // Grup 1 - Alcalins (+1)
+  // ━━━━━━━━━━ HIDROGEN (cas especial) ━━━━━━━━━━
+  { symbol: 'H', name: 'Hidrogen', group: 1, valencies: ['+1', '-1'] },
+
+  // ━━━━━━━━━━ PERÍODE 1-2 ━━━━━━━━━━
+  { symbol: 'He', name: 'Heli', group: 18, valencies: ['0'] },
   { symbol: 'Li', name: 'Liti', group: 1, valencies: ['+1'] },
-  { symbol: 'Na', name: 'Sodi', group: 1, valencies: ['+1'] },
-  { symbol: 'K', name: 'Potassi', group: 1, valencies: ['+1'] },
-  { symbol: 'Rb', name: 'Rubidi', group: 1, valencies: ['+1'] },
-  { symbol: 'Cs', name: 'Cesi', group: 1, valencies: ['+1'] },
-  // Grup 2 - Alcalinoterris (+2)
   { symbol: 'Be', name: 'Beril·li', group: 2, valencies: ['+2'] },
-  { symbol: 'Mg', name: 'Magnesi', group: 2, valencies: ['+2'] },
-  { symbol: 'Ca', name: 'Calci', group: 2, valencies: ['+2'] },
-  { symbol: 'Sr', name: 'Estronci', group: 2, valencies: ['+2'] },
-  { symbol: 'Ba', name: 'Bari', group: 2, valencies: ['+2'] },
-  // Grup 13 (+3)
   { symbol: 'B', name: 'Bor', group: 13, valencies: ['+3'] },
-  { symbol: 'Al', name: 'Alumini', group: 13, valencies: ['+3'] },
-  // Grup 14 (+4 / -4)
-  { symbol: 'C', name: 'Carboni', group: 14, valencies: ['+4', '-4'] },
-  { symbol: 'Si', name: 'Silici', group: 14, valencies: ['+4'] },
-  // Grup 15 (-3, +3, +5)
-  { symbol: 'N', name: 'Nitrogen', group: 15, valencies: ['-3', '+3', '+5'] },
-  { symbol: 'P', name: 'Fòsfor', group: 15, valencies: ['-3', '+3', '+5'] },
-  { symbol: 'As', name: 'Arsènic', group: 15, valencies: ['-3', '+3', '+5'] },
-  // Grup 16 (-2, +4, +6)
+  { symbol: 'C', name: 'Carboni', group: 14, valencies: ['+4', '-4', '+2'] },
+  { symbol: 'N', name: 'Nitrogen', group: 15, valencies: ['-3', '+1', '+2', '+3', '+4', '+5'] },
   { symbol: 'O', name: 'Oxigen', group: 16, valencies: ['-2'] },
-  { symbol: 'S', name: 'Sofre', group: 16, valencies: ['-2', '+4', '+6'] },
-  { symbol: 'Se', name: 'Seleni', group: 16, valencies: ['-2', '+4', '+6'] },
-  // Grup 17 - Halògens (-1, +1, +3, +5, +7)
   { symbol: 'F', name: 'Fluor', group: 17, valencies: ['-1'] },
+  { symbol: 'Ne', name: 'Neó', group: 18, valencies: ['0'] },
+
+  // ━━━━━━━━━━ PERÍODE 3 ━━━━━━━━━━
+  { symbol: 'Na', name: 'Sodi', group: 1, valencies: ['+1'] },
+  { symbol: 'Mg', name: 'Magnesi', group: 2, valencies: ['+2'] },
+  { symbol: 'Al', name: 'Alumini', group: 13, valencies: ['+3'] },
+  { symbol: 'Si', name: 'Silici', group: 14, valencies: ['+4', '-4'] },
+  { symbol: 'P', name: 'Fòsfor', group: 15, valencies: ['-3', '+3', '+5'] },
+  { symbol: 'S', name: 'Sofre', group: 16, valencies: ['-2', '+4', '+6'] },
   { symbol: 'Cl', name: 'Clor', group: 17, valencies: ['-1', '+1', '+3', '+5', '+7'] },
-  { symbol: 'Br', name: 'Brom', group: 17, valencies: ['-1', '+1', '+5'] },
-  { symbol: 'I', name: 'Iode', group: 17, valencies: ['-1', '+5', '+7'] },
-  // Metalls de transició
+  { symbol: 'Ar', name: 'Argó', group: 18, valencies: ['0'] },
+
+  // ━━━━━━━━━━ PERÍODE 4 ━━━━━━━━━━
+  { symbol: 'K', name: 'Potassi', group: 1, valencies: ['+1'] },
+  { symbol: 'Ca', name: 'Calci', group: 2, valencies: ['+2'] },
+  { symbol: 'Sc', name: 'Escandi', group: 3, valencies: ['+3'] },
+  { symbol: 'Ti', name: 'Titani', group: 4, valencies: ['+2', '+3', '+4'] },
+  { symbol: 'V', name: 'Vanadi', group: 5, valencies: ['+2', '+3', '+4', '+5'] },
+  { symbol: 'Cr', name: 'Crom', group: 6, valencies: ['+2', '+3', '+6'] },
+  { symbol: 'Mn', name: 'Manganès', group: 7, valencies: ['+2', '+3', '+4', '+6', '+7'] },
   { symbol: 'Fe', name: 'Ferro', group: 8, valencies: ['+2', '+3'] },
+  { symbol: 'Co', name: 'Cobalt', group: 9, valencies: ['+2', '+3'] },
+  { symbol: 'Ni', name: 'Níquel', group: 10, valencies: ['+2', '+3'] },
   { symbol: 'Cu', name: 'Coure', group: 11, valencies: ['+1', '+2'] },
   { symbol: 'Zn', name: 'Zinc', group: 12, valencies: ['+2'] },
+  { symbol: 'Ga', name: 'Gal·li', group: 13, valencies: ['+3'] },
+  { symbol: 'Ge', name: 'Germani', group: 14, valencies: ['+2', '+4', '-4'] },
+  { symbol: 'As', name: 'Arsènic', group: 15, valencies: ['-3', '+3', '+5'] },
+  { symbol: 'Se', name: 'Seleni', group: 16, valencies: ['-2', '+4', '+6'] },
+  { symbol: 'Br', name: 'Brom', group: 17, valencies: ['-1', '+1', '+3', '+5', '+7'] },
+  { symbol: 'Kr', name: 'Criptó', group: 18, valencies: ['0', '+2'] },
+
+  // ━━━━━━━━━━ PERÍODE 5 ━━━━━━━━━━
+  { symbol: 'Rb', name: 'Rubidi', group: 1, valencies: ['+1'] },
+  { symbol: 'Sr', name: 'Estronci', group: 2, valencies: ['+2'] },
+  { symbol: 'Y', name: 'Itri', group: 3, valencies: ['+3'] },
+  { symbol: 'Zr', name: 'Zirconi', group: 4, valencies: ['+4'] },
+  { symbol: 'Nb', name: 'Niobi', group: 5, valencies: ['+3', '+5'] },
+  { symbol: 'Mo', name: 'Molibdè', group: 6, valencies: ['+2', '+3', '+4', '+5', '+6'] },
+  { symbol: 'Tc', name: 'Tecneci', group: 7, valencies: ['+4', '+6', '+7'] },
+  { symbol: 'Ru', name: 'Ruteni', group: 8, valencies: ['+2', '+3', '+4', '+6', '+8'] },
+  { symbol: 'Rh', name: 'Rodi', group: 9, valencies: ['+2', '+3', '+4'] },
+  { symbol: 'Pd', name: 'Pal·ladi', group: 10, valencies: ['+2', '+4'] },
   { symbol: 'Ag', name: 'Plata (Argent)', group: 11, valencies: ['+1'] },
+  { symbol: 'Cd', name: 'Cadmi', group: 12, valencies: ['+2'] },
+  { symbol: 'In', name: 'Indi', group: 13, valencies: ['+3'] },
+  { symbol: 'Sn', name: 'Estany', group: 14, valencies: ['+2', '+4'] },
+  { symbol: 'Sb', name: 'Antimoni', group: 15, valencies: ['-3', '+3', '+5'] },
+  { symbol: 'Te', name: 'Tel·luri', group: 16, valencies: ['-2', '+4', '+6'] },
+  { symbol: 'I', name: 'Iode', group: 17, valencies: ['-1', '+1', '+3', '+5', '+7'] },
+  { symbol: 'Xe', name: 'Xenó', group: 18, valencies: ['0', '+2', '+4', '+6', '+8'] },
+
+  // ━━━━━━━━━━ PERÍODE 6 ━━━━━━━━━━
+  { symbol: 'Cs', name: 'Cesi', group: 1, valencies: ['+1'] },
+  { symbol: 'Ba', name: 'Bari', group: 2, valencies: ['+2'] },
+  // Lantànids (típicament +3)
+  { symbol: 'La', name: 'Lantani', group: 3, valencies: ['+3'] },
+  { symbol: 'Ce', name: 'Ceri', group: 3, valencies: ['+3', '+4'] },
+  { symbol: 'Pr', name: 'Praseodimi', group: 3, valencies: ['+3', '+4'] },
+  { symbol: 'Nd', name: 'Neodimi', group: 3, valencies: ['+3'] },
+  { symbol: 'Pm', name: 'Prometi', group: 3, valencies: ['+3'] },
+  { symbol: 'Sm', name: 'Samari', group: 3, valencies: ['+2', '+3'] },
+  { symbol: 'Eu', name: 'Europi', group: 3, valencies: ['+2', '+3'] },
+  { symbol: 'Gd', name: 'Gadolini', group: 3, valencies: ['+3'] },
+  { symbol: 'Tb', name: 'Terbi', group: 3, valencies: ['+3', '+4'] },
+  { symbol: 'Dy', name: 'Disprosi', group: 3, valencies: ['+3'] },
+  { symbol: 'Ho', name: 'Holmi', group: 3, valencies: ['+3'] },
+  { symbol: 'Er', name: 'Erbi', group: 3, valencies: ['+3'] },
+  { symbol: 'Tm', name: 'Tuli', group: 3, valencies: ['+3'] },
+  { symbol: 'Yb', name: 'Iterbi', group: 3, valencies: ['+2', '+3'] },
+  { symbol: 'Lu', name: 'Luteci', group: 3, valencies: ['+3'] },
+  // Metalls de transició període 6
+  { symbol: 'Hf', name: 'Hafni', group: 4, valencies: ['+4'] },
+  { symbol: 'Ta', name: 'Tàntal', group: 5, valencies: ['+5'] },
+  { symbol: 'W', name: 'Tungstè', group: 6, valencies: ['+2', '+3', '+4', '+5', '+6'] },
+  { symbol: 'Re', name: 'Reni', group: 7, valencies: ['+4', '+6', '+7'] },
+  { symbol: 'Os', name: 'Osmi', group: 8, valencies: ['+2', '+3', '+4', '+6', '+8'] },
+  { symbol: 'Ir', name: 'Iridi', group: 9, valencies: ['+3', '+4', '+6'] },
+  { symbol: 'Pt', name: 'Platí', group: 10, valencies: ['+2', '+4'] },
   { symbol: 'Au', name: 'Or', group: 11, valencies: ['+1', '+3'] },
   { symbol: 'Hg', name: 'Mercuri', group: 12, valencies: ['+1', '+2'] },
+  { symbol: 'Tl', name: 'Tal·li', group: 13, valencies: ['+1', '+3'] },
   { symbol: 'Pb', name: 'Plom', group: 14, valencies: ['+2', '+4'] },
-  { symbol: 'Sn', name: 'Estany', group: 14, valencies: ['+2', '+4'] },
-  { symbol: 'Mn', name: 'Manganès', group: 7, valencies: ['+2', '+4', '+6', '+7'] },
-  { symbol: 'Cr', name: 'Crom', group: 6, valencies: ['+2', '+3', '+6'] },
-  { symbol: 'Ni', name: 'Níquel', group: 10, valencies: ['+2', '+3'] },
-  { symbol: 'Co', name: 'Cobalt', group: 9, valencies: ['+2', '+3'] },
-  { symbol: 'Ti', name: 'Titani', group: 4, valencies: ['+3', '+4'] },
+  { symbol: 'Bi', name: 'Bismut', group: 15, valencies: ['+3', '+5'] },
+  { symbol: 'Po', name: 'Poloni', group: 16, valencies: ['-2', '+2', '+4', '+6'] },
+  { symbol: 'At', name: 'Àstat', group: 17, valencies: ['-1', '+1', '+3', '+5', '+7'] },
+  { symbol: 'Rn', name: 'Radó', group: 18, valencies: ['0'] },
+
+  // ━━━━━━━━━━ PERÍODE 7 ━━━━━━━━━━
+  { symbol: 'Fr', name: 'Franci', group: 1, valencies: ['+1'] },
+  { symbol: 'Ra', name: 'Radi', group: 2, valencies: ['+2'] },
+  // Actínids
+  { symbol: 'Ac', name: 'Actini', group: 3, valencies: ['+3'] },
+  { symbol: 'Th', name: 'Tori', group: 3, valencies: ['+4'] },
+  { symbol: 'Pa', name: 'Protactini', group: 3, valencies: ['+4', '+5'] },
+  { symbol: 'U', name: 'Urani', group: 3, valencies: ['+3', '+4', '+5', '+6'] },
+  { symbol: 'Np', name: 'Neptuni', group: 3, valencies: ['+3', '+4', '+5', '+6'] },
+  { symbol: 'Pu', name: 'Plutoni', group: 3, valencies: ['+3', '+4', '+5', '+6'] },
+  { symbol: 'Am', name: 'Americi', group: 3, valencies: ['+3', '+4', '+5', '+6'] },
+  { symbol: 'Cm', name: 'Curi', group: 3, valencies: ['+3'] },
+  { symbol: 'Bk', name: 'Berkeli', group: 3, valencies: ['+3', '+4'] },
+  { symbol: 'Cf', name: 'Californi', group: 3, valencies: ['+3'] },
+  { symbol: 'Es', name: 'Einsteni', group: 3, valencies: ['+3'] },
+  { symbol: 'Fm', name: 'Fermi', group: 3, valencies: ['+3'] },
+  { symbol: 'Md', name: 'Mendelevi', group: 3, valencies: ['+2', '+3'] },
+  { symbol: 'No', name: 'Nobeli', group: 3, valencies: ['+2', '+3'] },
+  { symbol: 'Lr', name: 'Laurenci', group: 3, valencies: ['+3'] },
+  // Transactínids (estimacions)
+  { symbol: 'Rf', name: 'Rutherfordi', group: 4, valencies: ['+4'] },
+  { symbol: 'Db', name: 'Dubni', group: 5, valencies: ['+5'] },
+  { symbol: 'Sg', name: 'Seaborgi', group: 6, valencies: ['+6'] },
+  { symbol: 'Bh', name: 'Bohri', group: 7, valencies: ['+7'] },
+  { symbol: 'Hs', name: 'Hassi', group: 8, valencies: ['+8'] },
+  { symbol: 'Mt', name: 'Meitneri', group: 9, valencies: ['?'] },
+  { symbol: 'Ds', name: 'Darmstadti', group: 10, valencies: ['?'] },
+  { symbol: 'Rg', name: 'Roentgeni', group: 11, valencies: ['?'] },
+  { symbol: 'Cn', name: 'Copernici', group: 12, valencies: ['+2'] },
+  { symbol: 'Nh', name: 'Nihoni', group: 13, valencies: ['?'] },
+  { symbol: 'Fl', name: 'Flerovi', group: 14, valencies: ['?'] },
+  { symbol: 'Mc', name: 'Moscovi', group: 15, valencies: ['?'] },
+  { symbol: 'Lv', name: 'Livermori', group: 16, valencies: ['?'] },
+  { symbol: 'Ts', name: 'Tennes', group: 17, valencies: ['?'] },
+  { symbol: 'Og', name: 'Oganessó', group: 18, valencies: ['?'] },
 ];
 
 const VALENCIA_TIPS = {
@@ -3278,6 +3534,12 @@ function renderPeriodicTable() {
     else if (e.period === 8 || e.period === 9)          matrix[e.period][e.group] = e;
   });
 
+  // Construir mapa de valencias para acceso rápido
+  if (!window.VALENCIA_BY_SYMBOL) {
+    window.VALENCIA_BY_SYMBOL = {};
+    VALENCIES.forEach(v => { window.VALENCIA_BY_SYMBOL[v.symbol] = v.valencies; });
+  }
+
   const grid = document.getElementById('pt-grid');
   grid.innerHTML = '';
 
@@ -3295,7 +3557,9 @@ function renderPeriodicTable() {
       if (elem) {
         cell.className = `pt-cell cat-${elem.category}`;
         const shortName = elem.name.length > 8 ? elem.name.slice(0,7)+'.' : elem.name;
-        cell.innerHTML = `<div class="pt-num">${elem.number}</div><div class="pt-sym">${elem.symbol}</div><div class="pt-name">${shortName}</div>`;
+        const vals = window.VALENCIA_BY_SYMBOL[elem.symbol];
+        const valsHtml = vals ? `<div class="pt-val">${vals.join(', ')}</div>` : '';
+        cell.innerHTML = `<div class="pt-num">${elem.number}</div><div class="pt-sym">${elem.symbol}</div><div class="pt-name">${shortName}</div>${valsHtml}`;
         cell.onclick = () => showElementPopup(elem);
       } else {
         cell.className = 'pt-cell pt-spacer';
@@ -3321,6 +3585,12 @@ function showElementPopup(elem) {
     ? `<div class="popup-hydride"><strong>Hidrur:</strong> ${hydride.formula}<br><span style="color:var(--muted);font-size:0.75rem">${hydride.sysName}${hydride.commonName ? ' / ' + hydride.commonName : ''}</span></div>`
     : `<div class="popup-hydride" style="opacity:0.5">Sense hidrur estable conegut</div>`;
 
+  // Valencias del elemento
+  const valencias = window.VALENCIA_BY_SYMBOL ? window.VALENCIA_BY_SYMBOL[elem.symbol] : null;
+  const valenciaHtml = valencias
+    ? `<div class="popup-hydride" style="background:rgba(255,215,0,0.1);border-left:3px solid #ffd700;"><strong>⚛️ València/es:</strong> <span style="color:#ffd700;font-weight:800;font-size:1rem">${valencias.join(', ')}</span></div>`
+    : `<div class="popup-hydride" style="opacity:0.5">València no especificada</div>`;
+
   popup.innerHTML = `
     <div class="popup-main">
       <div class="popup-symbol" style="color:${catColor}">${elem.symbol}</div>
@@ -3331,6 +3601,7 @@ function showElementPopup(elem) {
       </div>
     </div>
     <div class="popup-tags"><span class="popup-tag" style="background:${catColor}33;color:${catColor}">${catLabel}</span></div>
+    ${valenciaHtml}
     ${hydrideHtml}
   `;
   popup.classList.add('show');
